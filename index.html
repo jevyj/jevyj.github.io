@@ -222,10 +222,20 @@
         }
         .spawn-point {
             left: 50%; top: 5px;
-            width: 130px; height: 130px; 
+            width: 130px; height: 130px;
             border: 5px solid var(--danger-red);
             animation: menacing-pulse 4s ease-in-out infinite;
             z-index: 5;
+        }
+
+        /* TARGET MARKER */
+        .target-marker-zone {
+            position: absolute;
+            left: 360px; top: 580px;
+            width: 80px; height: 80px;
+            background: rgba(60, 120, 60, 0.3);
+            z-index: 2;
+            pointer-events: none;
         }
 
         /* MAISIE */
@@ -321,16 +331,16 @@
         .wall-bottom-left { bottom: 0; left: 40px; width: 220px; }
         .wall-bottom-right { bottom: 0; right: 40px; width: 220px; }
 
+        .side-wall { position: absolute; width: 40px; background: var(--wall-gray); border: 2px solid #3a3a4e; }
+        .side-wall-left { left: 0; top: 100px; bottom: 140px; }
+        .side-wall-right { right: 0; top: 100px; bottom: 140px; }
+
         .funnel-wall { position: absolute; background: var(--wall-gray); border: 2px solid #3a3a4e; }
         .funnel-left { left: 40px; top: 50px; width: 220px; height: 4px; }
         .funnel-right { right: 40px; top: 50px; width: 220px; height: 4px; }
 
         .grid {
             position: absolute; left: 40px; right: 40px; top: 100px; bottom: 140px;
-            background-size: 80px 80px; 
-            background-image: 
-                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px);
             pointer-events: none; z-index: 1;
         }
 
@@ -381,11 +391,11 @@
         .tower.selected .tower-base { border-color: var(--gold); }
 
         .tower-level {
-            position: absolute; top: -8px; right: -8px;
+            position: absolute; top: 2px; right: 2px;
             background: var(--gold); color: white; font-family: 'Baloo 2', cursive; font-weight: 800;
             width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; border: 2px solid white; 
-            z-index: 110; 
+            font-size: 0.75rem; border: 2px solid white;
+            z-index: 110;
         }
         
         .tower-health-bar, .tower-build-bar {
@@ -398,13 +408,13 @@
 
         /* --- ENEMIES --- */
         .enemy {
-            position: absolute; width: 60px; height: 60px; 
+            position: absolute; width: 35px; height: 35px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 2.8rem; z-index: 15; cursor: pointer; transition: transform 0.1s;
+            font-size: 1.8rem; z-index: 15; cursor: pointer; transition: transform 0.1s;
         }
         .enemy:hover { transform: scale(1.2); }
-        .enemy.boss { font-size: 4rem; width: 90px; height: 90px; z-index: 16; }
-        .enemy.lieutenant { font-size: 4.5rem; width: 100px; height: 100px; z-index: 17; filter: drop-shadow(0 0 10px var(--danger-red)); }
+        .enemy.boss { font-size: 2.5rem; width: 38px; height: 38px; z-index: 16; }
+        .enemy.lieutenant { font-size: 2.8rem; width: 38px; height: 38px; z-index: 17; filter: drop-shadow(0 0 10px var(--danger-red)); }
 
         .enemy-health-bar {
             position: absolute; top: -8px; left: 0; right: 0; height: 4px;
@@ -422,9 +432,9 @@
 
         /* === JACK O'LANTERN STYLES === */
         .enemy.pumpkin {
-            font-size: 3.5rem;
-            width: 75px;
-            height: 75px;
+            font-size: 2.2rem;
+            width: 38px;
+            height: 38px;
             z-index: 18;
             filter: drop-shadow(0 0 15px #ff6600) drop-shadow(0 0 8px #ff0000);
             animation: evil-pulse 1.5s ease-in-out infinite;
@@ -443,9 +453,9 @@
 
         /* === SPIDER STYLES === */
         .enemy.spider {
-            font-size: 3rem;
-            width: 70px;
-            height: 70px;
+            font-size: 2rem;
+            width: 35px;
+            height: 35px;
             z-index: 18;
             filter: drop-shadow(0 0 12px #8b00ff) drop-shadow(0 0 6px #4a0080);
             animation: spider-crawl 0.8s ease-in-out infinite;
@@ -481,9 +491,9 @@
 
         /* === GOLEM STYLES === */
         .enemy.golem {
-            font-size: 4.5rem;
-            width: 100px;
-            height: 100px;
+            font-size: 2.8rem;
+            width: 38px;
+            height: 38px;
             z-index: 19;
             filter: drop-shadow(0 0 18px #8b4513) drop-shadow(0 0 10px #654321);
             animation: golem-stomp 1.2s ease-in-out infinite;
@@ -522,11 +532,28 @@
             100% { opacity: 0; transform: scale(1.5) rotate(180deg); }
         }
 
+        /* === GOLD POPUP === */
+        .gold-popup {
+            position: absolute;
+            color: var(--gold);
+            font-family: 'Baloo 2', cursive;
+            font-weight: 800;
+            font-size: 1.2rem;
+            pointer-events: none;
+            z-index: 100;
+            animation: gold-float 1s ease-out forwards;
+        }
+
+        @keyframes gold-float {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+        }
+
         /* === VAMPIRE BAT STYLES === */
         .enemy.bat {
-            font-size: 3.2rem;
-            width: 70px;
-            height: 70px;
+            font-size: 2rem;
+            width: 35px;
+            height: 35px;
             z-index: 22;
             filter: drop-shadow(0 0 12px #8b008b) drop-shadow(0 0 6px #ff1493);
             animation: bat-fly 0.6s ease-in-out infinite;
@@ -790,6 +817,9 @@
             <div class="wall wall-bottom-left"></div>
             <div class="wall wall-bottom-right"></div>
 
+            <div class="side-wall side-wall-left"></div>
+            <div class="side-wall side-wall-right"></div>
+
             <div class="funnel-wall funnel-left"></div>
             <div class="funnel-wall funnel-right"></div>
             <div class="lane"></div>
@@ -799,6 +829,8 @@
             <div class="spawn-point token-frame">
                 <img src="howl.png" alt="Howl" class="token-img">
             </div>
+
+            <div class="target-marker-zone"></div>
 
             <div class="castle token-frame">
                 <img src="cece.png" alt="Princess Cecelia" class="token-img">
@@ -830,7 +862,7 @@
             <div class="menu-sprite" style="background-image: url('axel.png');"></div>
             <div class="build-info">
                 <div class="build-name">Axel Tower</div>
-                <div class="build-cost">🧶 50</div>
+                <div class="build-cost">🧶 10</div>
             </div>
         </div>
         <div class="build-option" onclick="enterPlacementMode('fancy')">
@@ -915,11 +947,14 @@
         const debugGridEl = document.getElementById('debugGrid');
         const maisie = document.getElementById('maisie');
         
-        const COLS = 9, ROWS = 28, CELL = 80; // More rows for longer map!
+        const COLS = 10, ROWS = 28, CELL = 80; // More rows for longer map!
+        const HALF_CELL = CELL / 2; // 40px for half-grid placement
+        const HALF_COLS = COLS * 2, HALF_ROWS = ROWS * 2; // Double resolution for pathfinding
+        const TARGET_ROW = 13; // Target marker is 6 squares (12 half-cells) down from spawn at row 1
         
         const gameState = {
             health: 100,
-            coins: 500,
+            coins: 120,
             wave: 1,
             waveActive: false,
             placementMode: false,
@@ -931,7 +966,7 @@
             projectiles: [],
             lasers: [],
             webs: [],
-            pathMap: Array(COLS).fill(null).map(() => Array(ROWS).fill(0)),
+            pathMap: Array(HALF_COLS).fill(null).map(() => Array(HALF_ROWS).fill(0)),
             maisie: { x: 400, y: 1200, targetX: null, targetY: null, speed: 3, buildTarget: null, webbed: false }, // Start in middle of map
             instantBuild: false,
             devMultiplier: 1,
@@ -943,13 +978,13 @@
         };
 
         const towerTypes = {
-            basic: { name: 'Axel Tower', sprite: 'axel.png', cost: 50, damage: 10, range: 120, cooldown: 1 },
+            basic: { name: 'Axel Tower', sprite: 'axel.png', cost: 10, damage: 7, range: 180, cooldown: 1 },
             fancy: { name: 'Fancy Tower', sprite: 'fancy.png', cost: 150, damage: 30, range: 150, cooldown: 0.8 },
             jet: { name: 'Jet Tower', sprite: 'jet.png', cost: 180, damage: 40, range: 160, cooldown: 1.0 },
             kona: { name: 'Kona Tower', sprite: 'kona.png', evolveSprite: 'kona-evolved.png', cost: 200, damage: 50, range: 180, cooldown: 1.2, evolveLevel: 3, evolveName: 'Kona Evolved' },
             vacuum: { name: 'Vacuum Tower', icon: '🌪️', cost: 250, damage: 0, range: 200, cooldown: 2, isVacuum: true },
             antiair: { name: 'Anti-Air Tower', icon: '🎯', cost: 220, damage: 45, range: 200, cooldown: 0.7, canHitFlying: true, canHitGround: false },
-            heal: { name: 'Healing Tower', icon: '💚', cost: 280, damage: 0, range: 150, cooldown: 1.5, isHeal: true, healAmount: 15 }
+            heal: { name: 'Healing Tower', icon: '💚', cost: 280, damage: 0, range: 600, cooldown: 1.5, isHeal: true, healAmount: 7.5 }
         };
 
         // === KEYBOARD INPUT ===
@@ -978,8 +1013,8 @@
             // Convert viewport coords to canvas coords
             const canvasX = mouseX;
             const canvasY = mouseY + cameraY;
-            const gridX = Math.floor((canvasX - 40) / CELL) * CELL + 40;
-            const gridY = Math.floor((canvasY - 100) / CELL) * CELL + 100;
+            const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
+            const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
             if (isValidPlacement(gridX, gridY)) placeTower(gameState.selectedType, gridX, gridY);
         });
 
@@ -991,8 +1026,8 @@
             // Convert viewport coords to canvas coords
             const canvasX = mouseX;
             const canvasY = mouseY + cameraY;
-            const gridX = Math.floor((canvasX - 40) / CELL) * CELL + 40;
-            const gridY = Math.floor((canvasY - 100) / CELL) * CELL + 100;
+            const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
+            const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
             // Position preview in VIEWPORT space (subtract camera offset)
             preview.style.left = (gridX) + 'px';
             preview.style.top = (gridY - cameraY) + 'px';
@@ -1001,13 +1036,21 @@
 
         // === PATH SYSTEM ===
         function updatePathMap() {
-            for(let c=0; c<COLS; c++) for(let r=0; r<ROWS; r++) gameState.pathMap[c][r] = 0;
+            for(let c=0; c<HALF_COLS; c++) for(let r=0; r<HALF_ROWS; r++) gameState.pathMap[c][r] = 0;
             gameState.towers.forEach(t => {
-                const col = Math.floor((t.x - 40) / CELL);
-                const row = Math.floor((t.y - 100) / CELL);
-                if(col >= 0 && col < COLS && row >= 0 && row < ROWS) gameState.pathMap[col][row] = 9999;
+                const col = Math.floor((t.x - 40) / HALF_CELL);
+                const row = Math.floor((t.y - 100) / HALF_CELL);
+                // Mark 2x2 grid cells as blocked (tower is 80x80, grid is 40x40)
+                for(let dc=0; dc<2; dc++) {
+                    for(let dr=0; dr<2; dr++) {
+                        const c = col + dc, r = row + dr;
+                        if(c >= 0 && c < HALF_COLS && r >= 0 && r < HALF_ROWS) {
+                            gameState.pathMap[c][r] = 9999;
+                        }
+                    }
+                }
             });
-            const queue = [{c: 4, r: ROWS-1, dist: 0}];
+            const queue = [{c: Math.floor(HALF_COLS/2), r: HALF_ROWS-1, dist: 0}];
             const visited = new Set();
             while(queue.length > 0) {
                 queue.sort((a,b) => a.dist - b.dist);
@@ -1017,9 +1060,16 @@
                 visited.add(key);
                 if(gameState.pathMap[c][r] === 9999) continue;
                 gameState.pathMap[c][r] = dist;
-                [[c-1,r],[c+1,r],[c,r-1],[c,r+1]].forEach(([nc,nr]) => {
-                    if(nc>=0 && nc<COLS && nr>=0 && nr<ROWS && !visited.has(`${nc},${nr}`)) {
-                        queue.push({c:nc, r:nr, dist: dist+1});
+                // Include diagonals for shortcuts: 8-directional movement
+                const neighbors = [
+                    [c-1,r], [c+1,r], [c,r-1], [c,r+1],  // Cardinal directions
+                    [c-1,r-1], [c-1,r+1], [c+1,r-1], [c+1,r+1]  // Diagonals
+                ];
+                neighbors.forEach(([nc,nr]) => {
+                    if(nc>=0 && nc<HALF_COLS && nr>=0 && nr<HALF_ROWS && !visited.has(`${nc},${nr}`)) {
+                        const isDiagonal = nc !== c && nr !== r;
+                        const moveCost = isDiagonal ? 1.414 : 1; // sqrt(2) for diagonals
+                        queue.push({c:nc, r:nr, dist: dist + moveCost});
                     }
                 });
             }
@@ -1027,12 +1077,30 @@
         }
 
         function isValidPlacement(x, y) {
-            if(x < 40 || x > 680 || y < 100 || y > 2180) return false;  // 680 = 40 + (8 columns * 80px)
-            const col = Math.floor((x - 40) / CELL);
-            const row = Math.floor((y - 100) / CELL);
-            if(gameState.towers.some(t => t.x === x && t.y === y)) return false;
-            gameState.pathMap[col][row] = 9999;
-            const queue = [{c: 4, r: ROWS-1, dist: 0}];
+            if(x < 40 || x > 720 || y < 100 || y > 2180) return false;  // 720 = max x so tower (80px wide) doesn't exceed 800px boundary
+            const col = Math.floor((x - 40) / HALF_CELL);
+            const row = Math.floor((y - 100) / HALF_CELL);
+
+            // Check for overlap with existing towers (towers are 80x80)
+            const towerSize = 80;
+            if(gameState.towers.some(t => {
+                return !(x + towerSize <= t.x || x >= t.x + towerSize ||
+                         y + towerSize <= t.y || y >= t.y + towerSize);
+            })) return false;
+
+            // Mark 2x2 grid cells as temporarily blocked (tower is 80x80, grid is 40x40)
+            const blockedCells = [];
+            for(let dc=0; dc<2; dc++) {
+                for(let dr=0; dr<2; dr++) {
+                    const c = col + dc, r = row + dr;
+                    if(c >= 0 && c < HALF_COLS && r >= 0 && r < HALF_ROWS) {
+                        blockedCells.push([c, r]);
+                        gameState.pathMap[c][r] = 9999;
+                    }
+                }
+            }
+
+            const queue = [{c: Math.floor(HALF_COLS/2), r: TARGET_ROW, dist: 0}];
             const visited = new Set();
             let canReach = false;
             while(queue.length > 0) {
@@ -1041,14 +1109,23 @@
                 if(visited.has(key)) continue;
                 visited.add(key);
                 if(gameState.pathMap[c][r] === 9999) continue;
-                if(r === 0) { canReach = true; break; }
-                [[c-1,r],[c+1,r],[c,r-1],[c,r+1]].forEach(([nc,nr]) => {
-                    if(nc>=0 && nc<COLS && nr>=0 && nr<ROWS && !visited.has(`${nc},${nr}`)) {
-                        queue.push({c:nc, r:nr, dist: dist+1});
+                if(r >= HALF_ROWS-2) { canReach = true; break; } // Check if castle area is reachable from marker
+                // Include diagonals for shortcuts
+                const neighbors = [
+                    [c-1,r], [c+1,r], [c,r-1], [c,r+1],  // Cardinal directions
+                    [c-1,r-1], [c-1,r+1], [c+1,r-1], [c+1,r+1]  // Diagonals
+                ];
+                neighbors.forEach(([nc,nr]) => {
+                    if(nc>=0 && nc<HALF_COLS && nr>=0 && nr<HALF_ROWS && !visited.has(`${nc},${nr}`)) {
+                        const isDiagonal = nc !== c && nr !== r;
+                        const moveCost = isDiagonal ? 1.414 : 1;
+                        queue.push({c:nc, r:nr, dist: dist + moveCost});
                     }
                 });
             }
-            gameState.pathMap[col][row] = 0;
+
+            // Restore cells
+            blockedCells.forEach(([c, r]) => gameState.pathMap[c][r] = 0);
             return canReach;
         }
 
@@ -1193,8 +1270,8 @@
 
         // === WAVE SYSTEM ===
         let waveTimer = null;
-        function startWaveTimer() {
-            let countdown = 5;
+        function startWaveTimer(seconds = 40) {
+            let countdown = seconds;
             document.getElementById('startWaveBtn').textContent = `Next Wave (${countdown}s)`;
             document.getElementById('startWaveBtn').disabled = true;
             waveTimer = setInterval(() => {
@@ -1210,7 +1287,10 @@
 
         function startWave() {
             console.log('Starting wave', gameState.wave);
-            if(gameState.waveActive) return;
+            if(gameState.waveActive) {
+                // Allow multiple waves to be active at once
+                console.log('Wave already active, starting additional wave');
+            }
             gameState.waveActive = true;
             document.getElementById('startWaveBtn').textContent = 'Wave In Progress...';
             document.getElementById('startWaveBtn').disabled = true;
@@ -1218,6 +1298,14 @@
             for(let i = 0; i < count; i++) {
                 setTimeout(() => spawnEnemy(), i * 1000);
             }
+
+            // Increment wave for next time
+            gameState.wave++;
+            updateStats();
+
+            // Auto-start next wave after 40 seconds
+            if(waveTimer) clearInterval(waveTimer);
+            startWaveTimer(40);
         }
 
         function spawnEnemy() {
@@ -1245,6 +1333,7 @@
                 maxHealth: isBoss ? hp * 5 : isLieutenant ? hp * 2 : isPumpkin ? hp * 1.5 : isSpider ? hp * 1.2 : isBat ? hp * 0.8 : isGolem ? hp * 4 : hp,
                 speed: isBoss ? 0.5 : isLieutenant ? 0.8 : isPumpkin ? 0.6 : isSpider ? 1.3 : isBat ? 1.4 : isGolem ? 0.3 : 1,
                 path: [], pathIndex: 0,
+                phase: 'movingToMarker', // First phase: walk straight to marker
                 isPumpkin: isPumpkin,
                 isSpider: isSpider,
                 isBat: isBat,
@@ -1270,16 +1359,16 @@
             canvas.appendChild(el);
             enemy.element = el;
             gameState.enemies.push(enemy);
-            updateEnemyPath(enemy);
+            // Don't calculate path yet - enemies walk straight to marker first
         }
 
         function updateEnemyPath(enemy) {
             console.log('Calculating path for enemy at', enemy.x, enemy.y);
-            const col = Math.floor((enemy.x - 40) / CELL);
-            const row = Math.floor((enemy.y - 100) / CELL);
+            const col = Math.floor((enemy.x - 40) / HALF_CELL);
+            const row = Math.floor((enemy.y - 100) / HALF_CELL);
 
             // Make sure we're starting from a valid grid position
-            if(row < 0 || row >= ROWS || col < 0 || col >= COLS) {
+            if(row < 0 || row >= HALF_ROWS || col < 0 || col >= HALF_COLS) {
                 console.warn('Enemy spawned outside grid!', {x: enemy.x, y: enemy.y, col, row});
                 return;
             }
@@ -1287,12 +1376,12 @@
             enemy.path = [];
             let c = col, r = row;
             let iterations = 0;
-            const MAX_ITERATIONS = ROWS * COLS; // Safety limit
+            const MAX_ITERATIONS = HALF_ROWS * HALF_COLS; // Safety limit
             const visited = new Set(); // Prevent cycles
 
             // Follow the pathMap towards the castle (decreasing distance values)
-            // Stop when we reach the castle row (ROWS-1)
-            while(r < ROWS-1 && iterations < MAX_ITERATIONS) {
+            // Stop when we reach the castle row
+            while(r < HALF_ROWS-1 && iterations < MAX_ITERATIONS) {
                 iterations++;
 
                 const key = `${c},${r}`;
@@ -1302,25 +1391,68 @@
                 }
                 visited.add(key);
 
+                // Include diagonals for shortcuts
                 const neighbors = [
-                    [c-1,r],[c+1,r],[c,r-1],[c,r+1]
+                    [c-1,r], [c+1,r], [c,r-1], [c,r+1],  // Cardinal directions
+                    [c-1,r-1], [c-1,r+1], [c+1,r-1], [c+1,r+1]  // Diagonals
                 ].filter(([nc,nr]) =>
-                    nc>=0 && nc<COLS && nr>=0 && nr<ROWS &&
+                    nc>=0 && nc<HALF_COLS && nr>=0 && nr<HALF_ROWS &&
                     gameState.pathMap[nc][nr] !== 9999 &&
                     !visited.has(`${nc},${nr}`)
                 );
 
-                // Sort by DECREASING distance (move towards lower numbers = towards castle)
+                // Sort by path distance (move towards lower numbers = towards castle) - this finds shortest path
                 neighbors.sort((a,b) => gameState.pathMap[a[0]][a[1]] - gameState.pathMap[b[0]][b[1]]);
 
                 if(neighbors.length === 0) break;
                 [c, r] = neighbors[0];
-                enemy.path.push({x: c * CELL + 40 + CELL/2, y: r * CELL + 100 + CELL/2});
+                enemy.path.push({x: c * HALF_CELL + 40 + HALF_CELL/2, y: r * HALF_CELL + 100 + HALF_CELL/2});
             }
 
             if(iterations >= MAX_ITERATIONS) {
                 console.error('Pathfinding exceeded max iterations! Enemy stuck at', {c, r});
             }
+
+            // Smooth the path - only keep waypoints where direction changes
+            smoothPath(enemy);
+        }
+
+        function smoothPath(enemy) {
+            if(enemy.path.length <= 2) return; // No smoothing needed for very short paths
+
+            const smoothed = [enemy.path[0]]; // Always keep the first waypoint
+
+            for(let i = 1; i < enemy.path.length - 1; i++) {
+                const prev = enemy.path[i - 1];
+                const current = enemy.path[i];
+                const next = enemy.path[i + 1];
+
+                // Calculate direction vectors
+                const dx1 = current.x - prev.x;
+                const dy1 = current.y - prev.y;
+                const dx2 = next.x - current.x;
+                const dy2 = next.y - current.y;
+
+                // Normalize directions
+                const len1 = Math.sqrt(dx1*dx1 + dy1*dy1);
+                const len2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+
+                if(len1 > 0 && len2 > 0) {
+                    const dir1x = dx1 / len1;
+                    const dir1y = dy1 / len1;
+                    const dir2x = dx2 / len2;
+                    const dir2y = dy2 / len2;
+
+                    // Only keep waypoint if direction changes significantly
+                    const dotProduct = dir1x * dir2x + dir1y * dir2y;
+                    if(dotProduct < 0.95) { // ~18 degree threshold
+                        smoothed.push(current);
+                    }
+                }
+            }
+
+            smoothed.push(enemy.path[enemy.path.length - 1]); // Always keep the last waypoint
+            enemy.path = smoothed;
         }
 
         function updateEnemies() {
@@ -1386,31 +1518,47 @@
                     }
                 }
 
-                if(enemy.pathIndex < enemy.path.length) {
-                    const target = enemy.path[enemy.pathIndex];
-                    const dx = target.x - enemy.x;
-                    const dy = target.y - enemy.y;
-                    const dist = Math.sqrt(dx*dx + dy*dy);
-                    if(dist < 3) {
-                        enemy.pathIndex++;
+                // PHASE 1: Moving straight to marker
+                if(enemy.phase === 'movingToMarker') {
+                    const targetY = 620; // Target marker Y position
+                    if(enemy.y < targetY) {
+                        enemy.y += enemy.speed;
+                        enemy.element.style.left = enemy.x + 'px';
+                        enemy.element.style.top = enemy.y + 'px';
                     } else {
-                        enemy.x += (dx / dist) * enemy.speed;
-                        enemy.y += (dy / dist) * enemy.speed;
+                        // Reached marker - switch to pathfinding phase
+                        enemy.phase = 'pathfinding';
+                        updateEnemyPath(enemy);
                     }
-                    enemy.element.style.left = enemy.x + 'px';
-                    enemy.element.style.top = enemy.y + 'px';
-                } else if(!enemy.reachedCastle) {
-                    // Only deal damage ONCE when reaching castle
-                    enemy.reachedCastle = true;
-                    enemy.element.classList.add('entering');
-                    gameState.health -= 10;
-                    updateStats();
-                    setTimeout(() => {
-                        enemy.element.remove();
-                        gameState.enemies = gameState.enemies.filter(e => e !== enemy);
-                        checkWaveEnd();
-                    }, 200);
-                    if(gameState.health <= 0) alert('Game Over!');
+                }
+                // PHASE 2: Pathfinding to castle
+                else if(enemy.phase === 'pathfinding') {
+                    if(enemy.pathIndex < enemy.path.length) {
+                        const target = enemy.path[enemy.pathIndex];
+                        const dx = target.x - enemy.x;
+                        const dy = target.y - enemy.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if(dist < 3) {
+                            enemy.pathIndex++;
+                        } else {
+                            enemy.x += (dx / dist) * enemy.speed;
+                            enemy.y += (dy / dist) * enemy.speed;
+                        }
+                        enemy.element.style.left = enemy.x + 'px';
+                        enemy.element.style.top = enemy.y + 'px';
+                    } else if(!enemy.reachedCastle) {
+                        // Reached castle - deal damage
+                        enemy.reachedCastle = true;
+                        enemy.element.classList.add('entering');
+                        gameState.health -= 10;
+                        updateStats();
+                        setTimeout(() => {
+                            enemy.element.remove();
+                            gameState.enemies = gameState.enemies.filter(e => e !== enemy);
+                            checkWaveEnd();
+                        }, 200);
+                        if(gameState.health <= 0) alert('Game Over!');
+                    }
                 }
             });
         }
@@ -1590,7 +1738,7 @@
 
             // Damage tower
             if(tower.built) {
-                tower.health -= 30; // Heavy damage!
+                tower.health -= 15; // Heavy damage!
                 const healthBar = tower.element.querySelector('.tower-health-bar');
                 healthBar.style.display = 'block';
                 const pct = (tower.health / tower.maxHealth) * 100;
@@ -1728,6 +1876,16 @@
                 enemy.element.classList.add('dying');
                 gameState.coins += 10;
                 updateStats();
+
+                // Show gold popup
+                const goldPopup = document.createElement('div');
+                goldPopup.className = 'gold-popup';
+                goldPopup.textContent = '+10g';
+                goldPopup.style.left = enemy.x + 'px';
+                goldPopup.style.top = enemy.y + 'px';
+                canvas.appendChild(goldPopup);
+                setTimeout(() => goldPopup.remove(), 1000);
+
                 setTimeout(() => {
                     enemy.element.remove();
                     gameState.enemies = gameState.enemies.filter(e => e !== enemy);
@@ -1744,7 +1902,6 @@
 
         function endWave() {
             gameState.waveActive = false;
-            gameState.wave++;
             gameState.coins += 150;
             gameState.towers.forEach(t => {
                 t.health = t.maxHealth;
@@ -1754,7 +1911,7 @@
                 }
             });
             updateStats();
-            startWaveTimer();
+            // No longer need to call startWaveTimer() - waves auto-start every 40 seconds
         }
 
         // === TOWER INFO ===
@@ -1802,7 +1959,7 @@
             rangeCircle.style.width = (range*2) + 'px';
             rangeCircle.style.height = (range*2) + 'px';
             rangeCircle.style.left = (t.x + 40 - range) + 'px';
-            rangeCircle.style.top = (t.y + 40 - range) + 'px';
+            rangeCircle.style.top = (t.y + 40 - range - cameraY) + 'px';
         }
 
         function upgradeTower(cost) {
@@ -1922,11 +2079,11 @@
                 return;
             }
             let html = '';
-            for(let c=0; c<COLS; c++) {
-                for(let r=0; r<ROWS; r++) {
+            for(let c=0; c<HALF_COLS; c++) {
+                for(let r=0; r<HALF_ROWS; r++) {
                     const score = gameState.pathMap[c][r];
                     const color = score === 9999 ? 'red' : 'rgba(255,255,255,0.3)';
-                    html += `<div class="debug-cell" style="left:${c*80}px; top:${r*80}px; color:${color}">${score===9999?'X':score}</div>`;
+                    html += `<div class="debug-cell" style="left:${c*40}px; top:${r*40}px; color:${color}">${score===9999?'X':score}</div>`;
                 }
             }
             debugGridEl.innerHTML = html;
@@ -2086,6 +2243,7 @@
         // === GAME LOOP ===
         function gameLoop() {
             updateCamera();
+            updateRangeCircle();
             updateWebs();
             updateMaisie();
             updateEnemies();
@@ -2094,6 +2252,15 @@
             updateLasers();
             updateDayNightCycle();
             requestAnimationFrame(gameLoop);
+        }
+
+        function updateRangeCircle() {
+            if(gameState.selectedTower && rangeCircle.style.display === 'block') {
+                const t = gameState.selectedTower;
+                const type = towerTypes[t.type];
+                const range = type.range + (t.level * 10);
+                rangeCircle.style.top = (t.y + 40 - range - cameraY) + 'px';
+            }
         }
 
         // === INIT ===
