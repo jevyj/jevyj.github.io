@@ -20,15 +20,52 @@
 
         body {
             font-family: 'Fredoka', cursive;
-            background: linear-gradient(135deg, #4a6741 0%, #2d4a2b 100%);
             color: white;
             overflow: hidden;
             height: 100vh;
             user-select: none;
-            transition: background 3s ease;
+            /* Starry night background */
+            background-color: #0a0a1a;
+            background-image:
+                /* Stars layer 1 - small */
+                radial-gradient(1px 1px at 20px 30px, white, transparent),
+                radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 90px 40px, white, transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1.5px 1.5px at 160px 120px, white, transparent),
+                radial-gradient(1px 1px at 200px 50px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 220px 140px, white, transparent),
+                radial-gradient(1.5px 1.5px at 260px 90px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 300px 20px, white, transparent),
+                radial-gradient(1px 1px at 350px 110px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(2px 2px at 400px 60px, rgba(255,255,200,1), transparent),
+                /* Dark mountains silhouette */
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'%3E%3Cpolygon points='0,200 100,80 200,150 350,50 500,120 650,30 800,100 950,60 1100,90 1200,70 1200,200' fill='%23151525'/%3E%3C/svg%3E"),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 200'%3E%3Cpolygon points='0,200 150,100 300,150 400,80 550,140 700,60 850,130 1000,90 1150,110 1200,80 1200,200' fill='%230d0d1a'/%3E%3C/svg%3E"),
+                /* Night sky gradient */
+                linear-gradient(to bottom, #0a0a1a 0%, #1a1a2e 40%, #16213e 70%, #1a1a2e 100%);
+            background-size: 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 400px 200px, 100% 50%, 100% 60%, 100% 100%;
+            background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 60%, 0 65%, 0 0;
+            background-repeat: repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, no-repeat, no-repeat, no-repeat;
         }
 
-        /* Body transitions handled by LERP in JS */
+        /* Decorative frame around game area */
+        .game-viewport::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 4px solid #2a1a0a;
+            border-radius: 4px;
+            box-shadow:
+                inset 0 0 0 2px #5a4030,
+                0 0 20px rgba(0,0,0,0.5);
+            pointer-events: none;
+            z-index: 999;
+        }
 
         /* --- CAMERA VIEWPORT --- */
         .game-viewport {
@@ -41,118 +78,10 @@
             overflow: hidden;
             border: 4px solid var(--wall-gray);
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
-
-        /* === DAY/NIGHT CYCLE === */
-        .day-night-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: 30;
-            background: transparent;
-            opacity: 0;
-        }
-
-        .celestial {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 2;
-            transition: all 3s ease;
-        }
-
-        .sun {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #fffef0 0%, #ffe680 30%, #ffdb4d 60%, #ffa500 100%);
-            box-shadow:
-                0 0 20px #ffeb3b,
-                0 0 40px rgba(255,235,59,0.6),
-                0 0 60px rgba(255,200,50,0.3),
-                inset 0 0 30px rgba(255,255,255,0.5);
-            top: 40px;
-            right: 80px;
-            opacity: 1;
-        }
-
-        .sun::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 120%;
-            height: 120%;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle, rgba(255,235,100,0.3) 0%, transparent 70%);
-            animation: sun-glow 4s ease-in-out infinite;
-        }
-
-        @keyframes sun-glow {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-        }
-
-        .sun.hidden {
-            opacity: 0;
-            top: -100px;
-        }
-
-        .moon {
-            width: 80px;
-            height: 80px;
-            background-image: url('half-moon.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            box-shadow: 0 0 20px rgba(200,200,220,0.8), 0 0 40px rgba(180,180,200,0.4);
-            top: 80px;
-            right: 120px;
-            opacity: 0;
-            filter: drop-shadow(0 0 10px rgba(220,220,240,0.6));
-        }
-
-        .moon.visible {
-            opacity: 1;
-        }
-
-        .moon.hidden {
-            opacity: 0;
-        }
-
-        .stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 3s ease;
-        }
-
-        .stars.visible {
-            opacity: 1;
-        }
-
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 3px white;
-            animation: twinkle 3s ease-in-out infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
         /* --- SCROLLING CONTAINER --- */
         .game-canvas {
             position: absolute;
@@ -160,9 +89,72 @@
             left: 0;
             width: 800px;
             height: 2400px; /* MUCH LONGER MAP! */
-            background: #2d5016;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+            background: #0d1a0a;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
             transition: transform 0.1s linear;
+        }
+
+        /* === FOREST TREES (sides of map) === */
+        .forest-left, .forest-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .forest-left { left: 0; }
+        .forest-right { right: 0; }
+
+        /* Tree element */
+        .tree {
+            position: absolute;
+            width: 30px;
+            pointer-events: none;
+        }
+        /* Tree trunk */
+        .tree::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 20px;
+            background: linear-gradient(to right, #1a1208 0%, #2a1f10 50%, #1a1208 100%);
+            border-radius: 2px;
+        }
+        /* Tree canopy */
+        .tree::before {
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 40px solid #0a2506;
+            filter: drop-shadow(0 5px 3px rgba(0,0,0,0.5));
+        }
+        /* Variation classes */
+        .tree.small::before {
+            border-left-width: 12px;
+            border-right-width: 12px;
+            border-bottom-width: 28px;
+            border-bottom-color: #0d3008;
+        }
+        .tree.small::after {
+            width: 5px;
+            height: 14px;
+        }
+        .tree.dark::before {
+            border-bottom-color: #061a03;
+        }
+        .tree.light::before {
+            border-bottom-color: #123a0a;
         }
 
         /* --- ANIMATIONS --- */
@@ -228,14 +220,201 @@
             z-index: 5;
         }
 
-        /* TARGET MARKER */
+        /* TARGET MARKER - Yarn Ball */
         .target-marker-zone {
             position: absolute;
             left: 360px; top: 580px;
             width: 80px; height: 80px;
-            background: rgba(60, 120, 60, 0.3);
             z-index: 2;
             pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .target-marker-zone::before {
+            content: '';
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle at 35% 35%, #e8a0a0, #c75050 50%, #8b3030);
+            border-radius: 50%;
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.2);
+            opacity: 0.7;
+        }
+
+        /* === CLICK INDICATOR STYLES === */
+        /* Base indicator */
+        .click-indicator {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        /* STYLE 1: Magic Rune (Default) */
+        @keyframes rune-appear {
+            0% { transform: translate(-50%, -50%) scale(0.2) rotate(0deg); opacity: 0; }
+            30% { transform: translate(-50%, -50%) scale(1.1) rotate(90deg); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1) rotate(180deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.3) rotate(360deg); opacity: 0; }
+        }
+        .click-indicator.rune {
+            animation: rune-appear 0.6s ease-out forwards;
+        }
+        .click-indicator.rune::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 45px; height: 45px;
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.8), inset 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+        .click-indicator.rune::after {
+            content: '✦';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            color: #ffe566;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 1), 0 0 20px rgba(255, 180, 0, 0.8);
+        }
+
+        /* STYLE 2: Paw Print (Achievement: First Tower) */
+        @keyframes paw-appear {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-20deg); opacity: 0; }
+            40% { transform: translate(-50%, -50%) scale(1.2) rotate(5deg); opacity: 1; }
+            60% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(0.8) rotate(0deg); opacity: 0; }
+        }
+        .click-indicator.paw {
+            animation: paw-appear 0.6s ease-out forwards;
+        }
+        .click-indicator.paw::before {
+            content: '🐾';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            filter: drop-shadow(0 0 8px rgba(255, 180, 100, 0.9)) drop-shadow(0 0 15px rgba(255, 150, 50, 0.6));
+        }
+
+        /* STYLE 3: Sparkle Burst (Achievement: Wave 10) */
+        @keyframes sparkle-appear {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            30% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+        }
+        @keyframes sparkle-rotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(180deg); }
+        }
+        .click-indicator.sparkle {
+            animation: sparkle-appear 0.5s ease-out forwards;
+        }
+        .click-indicator.sparkle::before {
+            content: '✨';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            animation: sparkle-rotate 0.5s linear forwards;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 150, 1)) drop-shadow(0 0 20px rgba(255, 200, 100, 0.8));
+        }
+        .click-indicator.sparkle::after {
+            content: '⭐';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 1));
+        }
+
+        /* === ACHIEVEMENT POPUP === */
+        @keyframes achievement-slide {
+            0% { transform: translateX(100%); opacity: 0; }
+            15% { transform: translateX(0); opacity: 1; }
+            85% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+        .achievement-popup {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(40, 35, 30, 0.98), rgba(25, 20, 15, 0.98));
+            border: 3px solid #d4af37;
+            border-radius: 12px;
+            padding: 15px 20px;
+            z-index: 300;
+            animation: achievement-slide 4s ease-in-out forwards;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Baloo 2', cursive;
+        }
+        .achievement-icon {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+        }
+        .achievement-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .achievement-title {
+            color: #d4af37;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .achievement-desc {
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+        .achievement-unlock {
+            color: #4caf50;
+            font-size: 0.75rem;
+            margin-top: 3px;
+        }
+
+        /* === INDICATOR SELECTOR (in RTS panel) === */
+        .indicator-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .indicator-option {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #555;
+            border-radius: 50%;
+            background: rgba(30, 30, 40, 0.8);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .indicator-option:hover {
+            border-color: #888;
+            transform: scale(1.1);
+        }
+        .indicator-option.active {
+            border-color: #d4af37;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        .indicator-option.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .indicator-option.locked::after {
+            content: '🔒';
+            position: absolute;
+            font-size: 0.7rem;
+            bottom: -2px;
+            right: -2px;
         }
 
         /* MAISIE */
@@ -244,11 +423,16 @@
             50% { transform: translateY(-5px); }
         }
         .maisie {
-            width: 80px; height: 80px; 
+            width: 80px; height: 80px;
             border: 3px solid var(--hero-blue);
-            transition: left 0.1s linear, top 0.1s linear; 
+            transition: left 0.1s linear, top 0.1s linear;
             z-index: 50;
             animation: walk-bounce 0.5s infinite;
+            overflow: visible;
+            background: transparent;
+        }
+        .maisie .token-img {
+            clip-path: circle(38.5%);
         }
 
         /* CECE - At bottom of longer map, fully visible! */
@@ -257,7 +441,7 @@
             50% { transform: translateX(-50%) scale(1.02); box-shadow: 0 0 30px var(--gold), 0 0 50px rgba(255,215,0,0.5); }
         }
         .castle {
-            left: 50%; bottom: 20px;
+            left: 50%; bottom: 100px;
             width: 160px; height: 160px; 
             border: 5px solid var(--gold);
             animation: castle-pulse 3s ease-in-out infinite;
@@ -275,7 +459,101 @@
         }
 
         .game-title { font-family: 'Baloo 2', cursive; font-size: 1.8rem; font-weight: 800; color: var(--gold); }
-        
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .header-btn {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .header-btn.start-btn {
+            background: linear-gradient(to bottom, #4CAF50, #388E3C);
+            color: white;
+            padding: 8px 20px;
+            font-size: 1rem;
+        }
+        .header-btn.start-btn:hover {
+            background: linear-gradient(to bottom, #5CBF60, #48A048);
+            transform: scale(1.05);
+        }
+        .header-btn.start-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .header-btn.pause-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 8px 12px;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .header-btn.pause-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Game Menu */
+        .game-menu-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+        }
+        .game-menu-overlay.active { display: flex; }
+        .game-menu {
+            background: linear-gradient(to bottom, rgba(30, 30, 50, 0.98), rgba(15, 15, 30, 0.98));
+            border: 3px solid var(--gold);
+            border-radius: 15px;
+            padding: 25px 35px;
+            text-align: center;
+            min-width: 250px;
+        }
+        .game-menu-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        .game-menu-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 10px 0;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #555;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: linear-gradient(to bottom, #4a4a5a, #353545);
+            color: white;
+        }
+        .game-menu-btn:hover {
+            background: linear-gradient(to bottom, #5a5a6a, #454555);
+            border-color: var(--gold);
+            transform: scale(1.02);
+        }
+        .game-menu-hint {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+        }
+
         .stats-bar { display: flex; gap: 30px; align-items: center; }
         .stat { display: flex; align-items: center; gap: 8px; font-size: 1.3rem; font-weight: 700; }
         .stat-icon { font-size: 1.5rem; }
@@ -292,13 +570,20 @@
 
         .dev-panel {
             position: fixed; top: 80px; right: 20px;
-            background: rgba(0,0,0,0.9); border: 2px solid var(--gold);
-            padding: 20px; border-radius: 15px; z-index: 1000;
-            display: none; width: 250px;
+            background: rgba(0,0,0,0.95); border: 2px solid var(--gold);
+            padding: 15px; border-radius: 15px; z-index: 1000;
+            display: none; width: 440px; max-height: 80vh;
         }
-        .dev-panel.active { display: block; }
-        .dev-row { margin-bottom: 15px; }
-        .dev-row label { display: block; margin-bottom: 5px; color: var(--mint-green); }
+        .dev-panel.active { display: flex; flex-direction: column; }
+        .dev-panel-scroll {
+            overflow-y: auto; max-height: calc(80vh - 100px);
+            padding-right: 5px;
+        }
+        .dev-panel-scroll::-webkit-scrollbar { width: 6px; }
+        .dev-panel-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        .dev-panel-scroll::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+        .dev-row { margin-bottom: 12px; }
+        .dev-row label { display: block; margin-bottom: 5px; color: var(--mint-green); font-size: 0.9rem; }
         .dev-row input[type="number"] { width: 100%; padding: 8px; border-radius: 5px; border: none; }
         .dev-row input[type="checkbox"] { transform: scale(1.5); accent-color: var(--mint-green); }
 
@@ -319,9 +604,29 @@
         }
 
         .lane {
-            position: absolute; left: 40px; right: 40px; top: 100px; bottom: 140px; 
-            background: rgba(139, 111, 71, 0.4);
+            position: absolute; left: 40px; right: 40px; top: 100px; bottom: 140px;
+            /* Dark Stone Courtyard Pattern */
+            background-color: #2a2520;
+            background-image:
+                /* Grout lines - horizontal */
+                linear-gradient(to bottom,
+                    transparent 0px, transparent 76px,
+                    #1a1512 76px, #1a1512 80px),
+                /* Grout lines - vertical */
+                linear-gradient(to right,
+                    transparent 0px, transparent 76px,
+                    #1a1512 76px, #1a1512 80px),
+                /* Stone highlight */
+                radial-gradient(ellipse 50% 30% at 25% 25%, rgba(255,255,255,0.04) 0%, transparent 50%),
+                /* Stone shadow */
+                radial-gradient(ellipse 40% 40% at 75% 75%, rgba(0,0,0,0.15) 0%, transparent 50%),
+                /* Base stone variation */
+                linear-gradient(135deg,
+                    #332d28 0%, #2a2520 25%, #252018 50%, #2a2520 75%, #302a25 100%);
+            background-size: 80px 80px;
+            background-position: 0 0;
             border-left: 3px solid var(--wall-gray); border-right: 3px solid var(--wall-gray);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.4);
         }
 
         /* --- WALLS --- */
@@ -362,9 +667,8 @@
         }
         .tower-base {
             position: absolute; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(155, 123, 212, 0.9), rgba(255, 184, 217, 0.9));
-            border: 3px solid var(--royal-purple); border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            background: transparent;
+            border: none; border-radius: 8px;
         }
         
         .tower-icon { position: relative; font-size: 3rem; z-index: 1; }
@@ -384,7 +688,28 @@
             background: repeating-linear-gradient(45deg, #444, #444 10px, #555 10px, #555 20px);
             border-color: #888; opacity: 0.8;
         }
-        .tower.under-construction .tower-icon { opacity: 0.3; filter: grayscale(1); }
+        .tower.under-construction .tower-icon {
+            opacity: 0.3;
+            filter: grayscale(1);
+            border-color: #666 !important;
+        }
+        .tower.under-construction .tower-level {
+            background: #666;
+        }
+        .tower.under-construction::after {
+            content: '🚧';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            z-index: 120;
+            animation: construction-bounce 0.5s ease-in-out infinite;
+        }
+        @keyframes construction-bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-3px); }
+        }
         
         .tower:hover { transform: scale(1.1); }
         .tower.selected { transform: scale(1.15); }
@@ -404,7 +729,7 @@
         }
         .tower-health-bar { display: none; }
         .tower-health-fill { height: 100%; background: #4caf50; transition: width 0.3s ease; }
-        .tower-build-fill { height: 100%; background: var(--gold); width: 0%; transition: width 0.1s linear; }
+        .tower-build-fill { height: 100%; background: #888; width: 0%; transition: width 0.1s linear; }
 
         /* --- ENEMIES --- */
         .enemy {
@@ -416,17 +741,66 @@
         .enemy.boss { font-size: 2.5rem; width: 38px; height: 38px; z-index: 16; }
         .enemy.lieutenant { font-size: 2.8rem; width: 38px; height: 38px; z-index: 17; filter: drop-shadow(0 0 10px var(--danger-red)); }
 
+        /* Hazel Boss - Wave 10 */
+        .enemy.hazel-boss {
+            width: 135px; height: 135px;
+            background-image: url('hazel-boss1.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            border: 3px solid #ff0044;
+            box-shadow: 0 0 30px rgba(255, 0, 68, 0.8), 0 0 60px rgba(255, 0, 68, 0.4);
+            z-index: 25;
+            font-size: 0;
+            transition: opacity 0.2s;
+            animation: hazel-pulse 2s ease-in-out infinite;
+        }
+        .enemy.hazel-boss.over-tower {
+            opacity: 0.6;
+        }
+        @keyframes hazel-pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 0, 68, 0.8), 0 0 60px rgba(255, 0, 68, 0.4); }
+            50% { box-shadow: 0 0 50px rgba(255, 0, 68, 1), 0 0 100px rgba(255, 0, 68, 0.6); }
+        }
+        .enemy.hazel-boss .enemy-health-bar {
+            top: -12px; height: 8px; border: 1px solid #ff0044;
+        }
+
+        /* Red Lightning Effect */
+        .red-lightning {
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, transparent, #ff0044, #ff4466, #ff0044, transparent);
+            z-index: 100;
+            pointer-events: none;
+            animation: lightning-strike 0.3s ease-out forwards;
+            box-shadow: 0 0 10px #ff0044, 0 0 20px #ff0044, 0 0 40px #ff0044;
+        }
+        @keyframes lightning-strike {
+            0% { opacity: 1; transform: scaleX(1); }
+            50% { opacity: 1; transform: scaleX(2); }
+            100% { opacity: 0; transform: scaleX(0.5); }
+        }
+        .lightning-impact {
+            position: absolute;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 0, 68, 0.8), transparent);
+            z-index: 99;
+            pointer-events: none;
+            animation: lightning-impact 0.4s ease-out forwards;
+        }
+        @keyframes lightning-impact {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
         .enemy-health-bar {
             position: absolute; top: -8px; left: 0; right: 0; height: 4px;
             background: rgba(0,0,0,0.5); border-radius: 2px;
         }
         .enemy-health-fill { height: 100%; background: var(--danger-red); }
 
-        .target-marker {
-            position: absolute; font-size: 1.5rem; pointer-events: none; z-index: 5;
-            animation: bounce 1s infinite; display: none;
-        }
-        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
 
         .projectile { position: absolute; font-size: 1.5rem; z-index: 20; pointer-events: none; }
 
@@ -549,6 +923,46 @@
             100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
         }
 
+        /* === MAISIE SPEECH BUBBLE === */
+        .maisie-speech {
+            position: absolute;
+            left: 50%;
+            bottom: 100%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
+            background: white;
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 8px 12px;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #333;
+            pointer-events: none;
+            z-index: 150;
+            white-space: nowrap;
+            animation: speech-pop 2s ease-out forwards;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .maisie-speech::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 8px 0 8px;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
+        }
+
+        @keyframes speech-pop {
+            0% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.8); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+            80% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(0) scale(1); }
+        }
+
         /* === VAMPIRE BAT STYLES === */
         .enemy.bat {
             font-size: 2rem;
@@ -570,6 +984,20 @@
             }
         }
 
+        /* === LOKI ENEMY STYLES === */
+        .enemy.loki {
+            width: 52px;
+            height: 52px;
+            font-size: 0;
+            background: url('loki-enemy.png') center/cover no-repeat transparent;
+            z-index: 14;
+            border: 2px solid orange;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* Waddle animation is applied procedurally via JS for more dynamic movement */
+
         /* Heal effect */
         .heal-pulse {
             position: absolute;
@@ -585,6 +1013,39 @@
         @keyframes heal-pulse-anim {
             0% { opacity: 1; transform: scale(0.5); }
             100% { opacity: 0; transform: scale(2); }
+        }
+
+        /* === VACUUM/SUCK PARTICLE STYLES (Luigi's Mansion style) === */
+        .vacuum-particle {
+            position: absolute;
+            font-size: 1.2rem;
+            pointer-events: none;
+            z-index: 25;
+            animation: vacuum-spiral 0.5s ease-in forwards;
+            filter: drop-shadow(0 0 3px rgba(100, 200, 255, 0.8));
+        }
+
+        @keyframes vacuum-spiral {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(0deg) scale(1);
+            }
+            25% {
+                opacity: 1;
+                transform: translate(calc(var(--end-x) * 0.3 + var(--spiral-offset)), calc(var(--end-y) * 0.3 - var(--spiral-offset))) rotate(180deg) scale(0.9);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(calc(var(--end-x) * 0.6 - var(--spiral-offset) * 0.5), calc(var(--end-y) * 0.6 + var(--spiral-offset) * 0.5)) rotate(360deg) scale(0.7);
+            }
+            75% {
+                opacity: 0.7;
+                transform: translate(calc(var(--end-x) * 0.85 + var(--spiral-offset) * 0.3), calc(var(--end-y) * 0.85)) rotate(540deg) scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--end-x), var(--end-y)) rotate(720deg) scale(0.1);
+            }
         }
 
         /* === LASER BEAM STYLES === */
@@ -638,91 +1099,380 @@
             box-shadow: 0 0 10px #ffff00, 0 0 20px #ff3300;
         }
 
-        /* --- FIXED BOTTOM BUILD BAR --- */
-        .build-bar {
+        /* === RTS COMMAND PANEL === */
+        .rts-panel {
             position: fixed;
             bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(10, 10, 20, 0.98);
-            border-top: 3px solid var(--gold);
-            padding: 15px 20px;
-            z-index: 150;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            max-width: calc(100vw - 80px);
+            height: 175px;
+            background: linear-gradient(to bottom, rgba(30, 25, 20, 0.98), rgba(15, 12, 10, 0.98));
+            border: 3px solid #8b7355;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.4);
+            z-index: 150;
+            font-family: 'Baloo 2', cursive;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: transform 0.3s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .build-option {
-            background: rgba(155, 123, 212, 0.6);
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 2px solid var(--mint-green);
+        .rts-panel.minimized {
+            transform: translateX(-50%) translateY(140px);
+        }
+
+        .rts-panel-toggle {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 24px;
+            background: linear-gradient(to bottom, #5a4a3a, #3a3025);
+            border: 2px solid #8b7355;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
-            min-width: 180px;
+            justify-content: center;
+            color: #d4af37;
+            font-size: 1rem;
         }
-        .build-option:hover {
-            background: rgba(155, 123, 212, 0.8);
-            border-color: var(--gold);
-            transform: scale(1.05);
+        .rts-panel-toggle:hover {
+            background: linear-gradient(to bottom, #6a5a4a, #4a4035);
         }
-        
-        .menu-icon { font-size: 1.8rem; }
-        
-        .menu-sprite {
-            width: 40px; height: 40px;
+
+        /* Left: Portrait Section */
+        .rts-portrait {
+            width: 140px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 2px solid #5a4a3a;
+        }
+
+        .rts-portrait-frame {
+            width: 110px;
+            height: 110px;
+            border: 3px solid #d4af37;
             border-radius: 50%;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
+        }
+
+        .rts-portrait-img {
+            width: 100%;
+            height: 100%;
             background-size: 130%;
             background-position: center;
             background-repeat: no-repeat;
-            border: 2px solid orange;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            border-radius: 50%;
         }
 
-        .build-info {
+        .rts-hp-bar {
+            width: 110px;
+            height: 8px;
+            background: #333;
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .rts-hp-fill {
+            height: 100%;
+            background: linear-gradient(to bottom, #4caf50, #2e7d32);
+            transition: width 0.3s ease;
+        }
+
+        /* Start Game Button */
+        .rts-start-btn {
+            margin-top: 8px;
+            padding: 6px 16px;
+            background: linear-gradient(to bottom, #4a7c3a, #2d5a1e);
+            border: 2px solid #6ba34d;
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Baloo 2', cursive;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        .rts-start-btn:hover {
+            background: linear-gradient(to bottom, #5a8c4a, #3d6a2e);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(107, 163, 77, 0.4);
+        }
+        .rts-start-btn:active {
+            transform: translateY(0);
+        }
+        .rts-start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Portrait Content Wrapper */
+        .rts-portrait-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .rts-portrait-content.hidden {
+            display: none;
+        }
+
+        /* Wave Queue View (replaces portrait after game starts) */
+        .rts-wave-queue {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            height: 100%;
+            padding: 5px 0;
+        }
+        .rts-wave-queue.active {
+            display: flex;
+        }
+        .rts-wave-queue-title {
+            color: #d4af37;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            padding: 4px 8px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 4px;
+            margin: 0 5px;
+        }
+        .rts-wave-queue-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 8px;
+            margin: 0 5px;
+            background: rgba(40, 35, 30, 0.8);
+            border-radius: 6px;
+            border: 1px solid rgba(100, 85, 70, 0.3);
+        }
+        .rts-wave-queue-item.current {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.2);
+        }
+        .rts-wave-queue-item.boss {
+            border-color: #ff6b6b;
+            background: rgba(255, 80, 80, 0.2);
+        }
+        .rts-wave-queue-num {
+            color: #d4af37;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 16px;
+        }
+        .rts-wave-queue-icon {
+            font-size: 1.1rem;
+        }
+        .rts-wave-queue-name {
+            flex: 1;
+            color: #ddd;
+            font-size: 0.65rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Center: Info Section */
+        .rts-info {
+            flex: 1;
+            padding: 15px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 2px solid #5a4a3a;
+            overflow: hidden;
+        }
+
+        .rts-title {
+            color: #d4af37;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .rts-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rts-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .rts-stat-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .rts-stat-value {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .rts-desc {
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.4;
+            overflow: hidden;
+        }
+
+        /* Right: Action Buttons Grid */
+        .rts-actions {
+            padding: 10px;
+            padding-right: 5px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 6px;
+            align-items: center;
             flex: 1;
         }
-        .build-name {
-            font-family: 'Baloo 2';
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-        }
-        .build-cost {
-            font-size: 0.9rem;
-            color: var(--gold);
+
+        .rts-btn {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #3a3a4a, #252535);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .cancel-btn {
-            background: var(--danger-red);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 12px;
-            border: none;
-            cursor: pointer;
-            font-family: 'Baloo 2';
+        .rts-btn:hover, .rts-btn:active {
+            border-color: #d4af37;
+            background: linear-gradient(to bottom, #4a4a5a, #353545);
+            transform: translateY(-2px);
+        }
+
+        .rts-btn:active {
+            transform: scale(0.95);
+        }
+
+        .rts-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .rts-btn.selected {
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .rts-btn-icon {
+            width: 54px;
+            height: 54px;
+            background-size: 130%;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .rts-btn-cost {
+            position: absolute;
+            bottom: 4px;
+            right: 50%;
+            transform: translateX(50%);
+            font-size: 0.7rem;
+            color: #d4af37;
             font-weight: 700;
-            font-size: 1rem;
+            text-shadow: 1px 1px 2px #000, -1px -1px 2px #000;
         }
-        .cancel-btn:hover {
-            background: #ff5252;
+
+        .rts-btn.sell { border-color: #ff6b6b; }
+        .rts-btn.sell:hover { background: linear-gradient(to bottom, #5a3a3a, #3a2525); }
+
+        .rts-btn.upgrade { border-color: #4caf50; }
+        .rts-btn.upgrade:hover { background: linear-gradient(to bottom, #3a5a3a, #254025); }
+
+        /* Tower Tooltip (for hovering over build buttons) */
+        .rts-tooltip {
+            position: fixed;
+            background: linear-gradient(to bottom, rgba(20, 35, 20, 0.98), rgba(10, 20, 10, 0.98));
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            padding: 10px 12px;
+            min-width: 180px;
+            z-index: 200;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
         }
+        .rts-tooltip.active { display: block; }
+        .rts-tooltip-title { color: var(--gold); font-weight: 700; font-size: 1rem; margin-bottom: 5px; }
+        .rts-tooltip-cost { color: #ffd700; font-size: 0.85rem; margin-bottom: 5px; }
+        .rts-tooltip-stat { color: #ccc; font-size: 0.8rem; }
+        .rts-tooltip-stat span { color: #fff; font-weight: 600; }
+        .rts-tooltip-desc { color: #aaa; font-size: 0.75rem; margin-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; }
 
         .placement-preview {
-            position: absolute; width: 80px; height: 80px; border: 4px solid; border-radius: 8px;
+            position: absolute; width: 80px; height: 80px; border: 4px solid var(--danger-red); border-radius: 8px;
             pointer-events: none; z-index: 25; display: none;
             box-sizing: border-box;
+            box-shadow: 0 0 15px var(--danger-red), 0 0 5px var(--danger-red) inset;
         }
-        .placement-preview.valid { border-color: var(--mint-green); background: rgba(168, 230, 207, 0.3); }
-        .placement-preview.invalid { border-color: var(--danger-red); background: rgba(255, 107, 107, 0.3); }
-        
+        .placement-preview.valid {
+            border-color: var(--mint-green);
+            background: rgba(168, 230, 207, 0.3);
+            box-shadow: 0 0 15px var(--mint-green), 0 0 5px var(--mint-green) inset;
+        }
+        .placement-preview.invalid {
+            border-color: var(--danger-red);
+            background: rgba(255, 107, 107, 0.3);
+            box-shadow: 0 0 15px var(--danger-red), 0 0 5px var(--danger-red) inset;
+        }
+        /* Mobile double-tap confirmation pulse */
+        @keyframes confirm-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 15px var(--mint-green), 0 0 5px var(--mint-green) inset; }
+            50% { transform: scale(1.08); box-shadow: 0 0 25px var(--gold), 0 0 10px var(--gold) inset; }
+        }
+        .placement-preview.confirm-ready {
+            animation: confirm-pulse 0.6s ease-in-out infinite;
+            border-color: var(--gold);
+        }
+
         .info-panel {
             position: fixed;
             background: rgba(20, 20, 35, 0.98);
@@ -740,6 +1490,26 @@
         .info-actions { display: flex; gap: 5px; margin-top: 15px; }
         .info-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; }
 
+        .info-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .info-sprite {
+            width: 50px; height: 50px; border-radius: 10px;
+            background-size: cover; background-position: center;
+            border: 2px solid var(--gold); flex-shrink: 0;
+        }
+        .info-sprite-icon {
+            width: 50px; height: 50px; border-radius: 10px;
+            background: rgba(255,255,255,0.1); border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; flex-shrink: 0;
+        }
+        .info-header-text { flex: 1; }
+        .info-header-text .info-title { text-align: left; margin-bottom: 0; }
+        .info-desc {
+            font-size: 0.85rem; color: #aaa; margin-top: 8px;
+            padding: 8px; background: rgba(255,255,255,0.05);
+            border-radius: 8px; line-height: 1.4;
+        }
+
         .modal {
             position: fixed; top: 0; left: 0; bottom: 0; right: 0;
             background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000;
@@ -749,6 +1519,93 @@
             background: #2d1b4e; padding: 40px; border-radius: 25px; border: 3px solid var(--gold);
             max-width: 600px; text-align: center; color: white;
         }
+
+        /* Game Over Screen */
+        .game-over-content {
+            border-color: var(--danger-red);
+            background: linear-gradient(135deg, #1a0a0a 0%, #2d1b1b 50%, #1a0a0a 100%);
+            animation: game-over-pulse 2s ease-in-out infinite;
+        }
+        @keyframes game-over-pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 82, 82, 0.5); }
+            50% { box-shadow: 0 0 60px rgba(255, 82, 82, 0.8), 0 0 100px rgba(255, 82, 82, 0.3); }
+        }
+        .game-over-icon {
+            font-size: 5rem;
+            margin-bottom: 10px;
+            animation: skull-bounce 1s ease-in-out infinite;
+        }
+        @keyframes skull-bounce {
+            0%, 100% { transform: scale(1) rotate(-5deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+        .game-over-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: 3rem;
+            color: var(--danger-red);
+            text-shadow: 0 0 20px rgba(255, 82, 82, 0.8);
+            margin-bottom: 10px;
+        }
+        .game-over-message {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+        .game-over-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .stat-item {
+            background: rgba(0,0,0,0.3);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 2px solid var(--gold);
+        }
+        .stat-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--gold);
+            font-family: 'Baloo 2', cursive;
+        }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7); display: none;
+            align-items: center; justify-content: center;
+            z-index: 900; cursor: pointer;
+        }
+        .pause-overlay.active { display: flex; }
+        .pause-content {
+            text-align: center;
+            animation: pause-breathe 2s ease-in-out infinite;
+        }
+        @keyframes pause-breathe {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .pause-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+            margin-bottom: 15px;
+        }
+        .pause-hint {
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
         .tower-range-circle {
             position: absolute; border: 2px dashed rgba(168, 230, 207, 0.6); border-radius: 50%;
             pointer-events: none; background: radial-gradient(circle, rgba(168, 230, 207, 0.1), transparent);
@@ -773,44 +1630,491 @@
         .btn-primary { background: linear-gradient(135deg, var(--royal-purple), var(--soft-pink)); color: white; }
         .btn-success { background: linear-gradient(135deg, var(--mint-green), #7fd3b8); color: #333; }
         .btn:disabled { opacity: 0.8; cursor: pointer; background: linear-gradient(135deg, #666, #444); color: #ccc; }
+
+        /* === MOBILE D-PAD CONTROLS === */
+        .mobile-dpad {
+            display: none;
+            position: fixed;
+            bottom: 180px;
+            left: 20px;
+            width: 140px;
+            height: 140px;
+            z-index: 160;
+            pointer-events: none;
+        }
+
+        .dpad-btn {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(155, 123, 212, 0.8);
+            border: 3px solid var(--gold);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            pointer-events: auto;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .dpad-btn:active {
+            background: rgba(255, 217, 61, 0.9);
+            transform: scale(0.95);
+        }
+
+        .dpad-up { top: 0; left: 50%; transform: translateX(-50%); }
+        .dpad-down { bottom: 0; left: 50%; transform: translateX(-50%); }
+        .dpad-left { left: 0; top: 50%; transform: translateY(-50%); }
+        .dpad-right { right: 0; top: 50%; transform: translateY(-50%); }
+
+        /* === MOBILE RESPONSIVE STYLES === */
+        @media screen and (max-width: 850px) {
+            .game-header {
+                padding: 8px 10px;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .game-title {
+                font-size: 1.1rem;
+                width: 100%;
+                text-align: center;
+            }
+
+            .stats-bar {
+                width: 100%;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .stat {
+                font-size: 1rem;
+                gap: 4px;
+            }
+
+            .stat-icon {
+                font-size: 1.1rem;
+            }
+
+            .dev-btn {
+                padding: 4px 10px;
+                font-size: 0.85rem;
+            }
+
+            .game-viewport {
+                top: 70px;
+                width: 100vw;
+                height: calc(100vh - 180px);
+                border-width: 2px;
+                border-left: none;
+                border-right: none;
+            }
+
+            .game-canvas {
+                transform-origin: top left;
+                /* Scale is applied via JS to fit walls to screen width */
+            }
+
+            .controls {
+                bottom: 115px;
+                gap: 8px;
+            }
+
+            .btn {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+                min-width: 120px;
+            }
+
+            .rts-panel {
+                height: 140px;
+                width: 95vw;
+                max-width: 800px;
+            }
+
+            .rts-portrait {
+                width: 110px;
+                padding: 8px;
+            }
+
+            .rts-portrait-frame {
+                width: 80px;
+                height: 80px;
+            }
+
+            .rts-hp-bar {
+                width: 80px;
+                height: 6px;
+            }
+
+            .rts-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .rts-btn-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 1.4rem;
+            }
+
+            .rts-tooltip {
+                /* On mobile, position tooltip over the Build Tower / info section */
+                position: fixed;
+                left: 140px !important;
+                right: auto !important;
+                bottom: 20px !important;
+                top: auto !important;
+                min-width: 180px;
+                max-width: calc(100vw - 300px);
+                font-size: 0.8rem;
+                z-index: 200;
+            }
+
+            .mobile-dpad {
+                display: none;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 15px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .scroll-hint {
+                display: none;
+            }
+
+            /* Mobile tower info panel - fixed at bottom above build bar */
+            .info-panel {
+                left: 10px !important;
+                right: 10px !important;
+                bottom: 120px !important;
+                top: auto !important;
+                max-width: calc(100vw - 20px);
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            .info-panel .info-title {
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+            }
+
+            .info-panel .info-row {
+                padding: 3px 0;
+                font-size: 0.9rem;
+            }
+
+            .info-panel .info-actions {
+                margin-top: 10px;
+            }
+
+            .info-panel .info-btn {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media screen and (max-width: 850px) {
+            .desktop-instructions { display: none !important; }
+            .mobile-instructions { display: inline !important; }
+        }
+
+        @media screen and (max-width: 500px) {
+            .game-header {
+                padding: 5px 8px;
+            }
+
+            .game-title {
+                font-size: 0.9rem;
+            }
+
+            .header-controls {
+                position: relative;
+                left: auto;
+                transform: none;
+                gap: 5px;
+            }
+
+            .header-btn.start-btn {
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+
+            .header-btn.pause-btn {
+                padding: 5px 8px;
+                font-size: 0.9rem;
+            }
+
+            .stat {
+                font-size: 0.8rem;
+                gap: 3px;
+            }
+
+            .stat-icon {
+                font-size: 0.9rem;
+            }
+
+            .game-viewport {
+                top: 60px;
+                height: calc(100vh - 160px);
+            }
+
+            .controls {
+                bottom: 105px;
+                gap: 5px;
+            }
+
+            .btn {
+                font-size: 0.75rem;
+                padding: 8px 10px;
+                min-width: 90px;
+            }
+
+            .rts-panel {
+                height: 120px;
+                width: 98vw;
+                max-width: 800px;
+            }
+
+            .rts-portrait {
+                width: 90px;
+                padding: 5px;
+            }
+
+            .rts-portrait-frame {
+                width: 65px;
+                height: 65px;
+            }
+
+            .rts-hp-bar {
+                width: 65px;
+                height: 5px;
+            }
+
+            .rts-title {
+                font-size: 1rem;
+            }
+
+            .rts-stats {
+                gap: 10px;
+            }
+
+            .rts-stat {
+                font-size: 0.8rem;
+            }
+
+            .rts-desc {
+                display: none;
+            }
+
+            .rts-actions {
+                padding: 5px;
+            }
+
+            .rts-btn {
+                width: 48px;
+                height: 48px;
+            }
+
+            .rts-btn-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .rts-btn-cost {
+                font-size: 0.45rem;
+            }
+
+            .rts-tooltip {
+                left: 100px !important;
+                min-width: 120px;
+                max-width: calc(100vw - 220px);
+                padding: 6px 8px;
+                font-size: 0.75rem;
+            }
+
+            .mobile-dpad {
+                display: none;
+            }
+
+            .info-panel {
+                bottom: 110px !important;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="game-header">
         <div class="game-title">🏰 Defense of Couch Castle</div>
+        <div class="header-controls">
+            <button class="header-btn start-btn" id="startWaveBtn" onclick="startWave()" style="display: none;">▶ Start Wave</button>
+        </div>
         <div class="stats-bar">
             <div class="stat health-stat"><span class="stat-icon">❤️</span><span id="health">100</span></div>
             <div class="stat coins-stat"><span class="stat-icon">🧶</span><span id="coins">500</span></div>
             <div class="stat wave-stat"><span class="stat-icon">🌊</span><span id="wave">1</span></div>
+            <button class="dev-btn" onclick="toggleMenu()">☰ Menu</button>
             <button class="dev-btn" onclick="toggleDevPanel()">⚙️ Dev</button>
+        </div>
+    </div>
+
+    <!-- Game Menu Overlay -->
+    <div class="game-menu-overlay" id="gameMenuOverlay" onclick="if(event.target === this) toggleMenu()">
+        <div class="game-menu">
+            <div class="game-menu-title">☰ Menu</div>
+            <button class="game-menu-btn" onclick="resetGame(); toggleMenu();">🔄 Reset Game</button>
+            <button class="game-menu-btn" onclick="toggleMenu()">✕ Close</button>
+            <div class="game-menu-hint">Press ESC or close to unpause</div>
+        </div>
+    </div>
+
+    <!-- Pause Overlay (hidden, kept for compatibility) -->
+    <div class="pause-overlay" id="pauseOverlay" style="display:none !important;">
+        <div class="pause-content">
+            <div class="pause-title">⏸️ PAUSED</div>
+            <div class="pause-hint">Press P or click to resume</div>
         </div>
     </div>
 
     <div class="dev-panel" id="devPanel">
         <div class="info-title">👨‍💻 Dev Mode</div>
-        <div class="dev-row"><button class="btn btn-success" style="width:100%" onclick="devAddGold()">+1000 Coins 🧶</button></div>
-        <div class="dev-row" style="display:flex; justify-content:space-between; align-items:center">
-            <label style="margin:0">Instant Build</label>
-            <input type="checkbox" id="devInstantBuild" onchange="toggleInstantBuild()">
+        <div class="dev-panel-scroll">
+            <div class="dev-row"><button class="btn btn-success" style="width:100%" onclick="devAddGold()">+1000 Coins 🧶</button></div>
+            <div class="dev-row" style="display:flex; justify-content:space-between; align-items:center">
+                <label style="margin:0">Instant Build</label>
+                <input type="checkbox" id="devInstantBuild" onchange="toggleInstantBuild()">
+            </div>
+            <div class="dev-row" style="display:flex; justify-content:space-between; align-items:center">
+                <label style="margin:0">God Mode</label>
+                <input type="checkbox" id="devGodMode" onchange="toggleGodMode()">
+            </div>
+            <div class="dev-row" style="display:flex; justify-content:space-between; align-items:center">
+                <label style="margin:0">Show Pathing</label>
+                <input type="checkbox" id="devShowPathing" onchange="togglePathDebug()">
+            </div>
+            <div class="dev-row">
+                <label>Game Speed</label>
+                <select id="devGameSpeed" onchange="setGameSpeed(parseFloat(this.value))" style="width:100%; padding:8px; border-radius:5px; border:none; font-size:1rem;">
+                    <option value="0.25">0.25x (Very Slow)</option>
+                    <option value="0.5">0.5x (Slow)</option>
+                    <option value="1" selected>1x (Normal)</option>
+                    <option value="2">2x (Fast)</option>
+                    <option value="3">3x (Very Fast)</option>
+                    <option value="5">5x (Ultra)</option>
+                </select>
+            </div>
+            <div class="dev-row">
+                <label>Enemy HP Multiplier</label>
+                <input type="number" id="devHpMult" value="1" step="0.1" onchange="updateDevSettings()">
+            </div>
+            <div class="dev-row">
+                <label>Skip to Wave</label>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input type="number" id="devSkipWave" value="1" min="1" style="flex:1; padding:5px;">
+                    <button class="btn btn-primary" style="padding:5px 10px;" onclick="devSkipToWave()">Go</button>
+                </div>
+            </div>
+            <div class="dev-row">
+                <label>Day/Night Control</label>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <button class="btn btn-success" style="flex:1; padding:5px;" onclick="devSetDay()">☀️ Day</button>
+                    <button class="btn btn-primary" style="flex:1; padding:5px;" onclick="devSetNight()">🌙 Night</button>
+                </div>
+            </div>
+            <div class="dev-row">
+                <label>Spawn Enemy</label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:5px;">
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('loki')">🐱 Loki</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('ghost')">👻 Ghost</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('spider')">🕷️ Spider</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('bat')">🦇 Bat</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('golem')">🗿 Golem</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('pumpkin')">🎃 Pumpkin</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('boss')">👹 Boss</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem;" onclick="devSpawnEnemy('lieutenant')">😈 Lieutenant</button>
+                    <button class="btn" style="padding:5px; font-size:0.75rem; background:#ff0044; color:white;" onclick="spawnHazelBoss()">⚡ Hazel Boss</button>
+                </div>
+            </div>
+            <div class="dev-row"><button class="btn btn-danger" style="width:100%" onclick="devKillAllEnemies()">☠️ Kill All Enemies</button></div>
+            <div class="dev-row"><button class="btn btn-success" style="width:100%" onclick="devHealAllTowers()">💚 Heal All Towers</button></div>
+            <div class="dev-row"><button class="btn btn-primary" style="width:100%" onclick="devMaxSelectedTower()">⬆️ Max Selected Tower</button></div>
         </div>
-        <div class="dev-row" style="display:flex; justify-content:space-between; align-items:center">
-            <label style="margin:0">Show Pathing</label>
-            <input type="checkbox" id="devShowPathing" onchange="togglePathDebug()">
-        </div>
-        <div class="dev-row">
-            <label>Enemy HP Multiplier</label>
-            <input type="number" id="devHpMult" value="1" step="0.1" onchange="updateDevSettings()">
-        </div>
-        <div class="dev-row"><button class="btn btn-primary" style="width:100%" onclick="toggleDevPanel()">Close</button></div>
+        <div class="dev-row" style="margin-top:10px; margin-bottom:0;"><button class="btn btn-primary" style="width:100%" onclick="toggleDevPanel()">Close</button></div>
     </div>
 
     <div class="game-viewport" id="gameViewport">
         <div class="game-canvas" id="gameCanvas">
-            <!-- Day/Night Celestial Bodies -->
-            <div class="celestial sun" id="sun"></div>
-            <div class="celestial moon" id="moon"></div>
-            <div class="stars" id="stars"></div>
-
+            <!-- Forest Trees - Left Side -->
+            <div class="forest-left">
+                <div class="tree" style="left: 5px; top: 50px;"></div>
+                <div class="tree small light" style="left: 15px; top: 120px;"></div>
+                <div class="tree dark" style="left: 2px; top: 200px;"></div>
+                <div class="tree small" style="left: 18px; top: 280px;"></div>
+                <div class="tree light" style="left: 8px; top: 370px;"></div>
+                <div class="tree small dark" style="left: 12px; top: 450px;"></div>
+                <div class="tree" style="left: 3px; top: 540px;"></div>
+                <div class="tree small light" style="left: 20px; top: 620px;"></div>
+                <div class="tree dark" style="left: 6px; top: 710px;"></div>
+                <div class="tree small" style="left: 14px; top: 800px;"></div>
+                <div class="tree" style="left: 1px; top: 890px;"></div>
+                <div class="tree small dark" style="left: 18px; top: 970px;"></div>
+                <div class="tree light" style="left: 7px; top: 1060px;"></div>
+                <div class="tree small" style="left: 12px; top: 1150px;"></div>
+                <div class="tree dark" style="left: 4px; top: 1240px;"></div>
+                <div class="tree small light" style="left: 16px; top: 1330px;"></div>
+                <div class="tree" style="left: 9px; top: 1420px;"></div>
+                <div class="tree small" style="left: 2px; top: 1510px;"></div>
+                <div class="tree light" style="left: 15px; top: 1600px;"></div>
+                <div class="tree small dark" style="left: 8px; top: 1690px;"></div>
+                <div class="tree" style="left: 19px; top: 1780px;"></div>
+                <div class="tree small" style="left: 5px; top: 1870px;"></div>
+                <div class="tree dark" style="left: 13px; top: 1960px;"></div>
+                <div class="tree small light" style="left: 3px; top: 2050px;"></div>
+                <div class="tree" style="left: 17px; top: 2140px;"></div>
+                <div class="tree small" style="left: 10px; top: 2230px;"></div>
+                <div class="tree light" style="left: 6px; top: 2320px;"></div>
+            </div>
+            <!-- Forest Trees - Right Side -->
+            <div class="forest-right">
+                <div class="tree dark" style="left: 8px; top: 80px;"></div>
+                <div class="tree small" style="left: 2px; top: 160px;"></div>
+                <div class="tree light" style="left: 15px; top: 250px;"></div>
+                <div class="tree small dark" style="left: 6px; top: 330px;"></div>
+                <div class="tree" style="left: 18px; top: 420px;"></div>
+                <div class="tree small light" style="left: 10px; top: 500px;"></div>
+                <div class="tree dark" style="left: 4px; top: 590px;"></div>
+                <div class="tree small" style="left: 14px; top: 680px;"></div>
+                <div class="tree" style="left: 1px; top: 760px;"></div>
+                <div class="tree small dark" style="left: 19px; top: 850px;"></div>
+                <div class="tree light" style="left: 7px; top: 940px;"></div>
+                <div class="tree small" style="left: 12px; top: 1020px;"></div>
+                <div class="tree dark" style="left: 3px; top: 1110px;"></div>
+                <div class="tree small light" style="left: 16px; top: 1200px;"></div>
+                <div class="tree" style="left: 9px; top: 1290px;"></div>
+                <div class="tree small" style="left: 5px; top: 1380px;"></div>
+                <div class="tree light" style="left: 18px; top: 1470px;"></div>
+                <div class="tree small dark" style="left: 11px; top: 1560px;"></div>
+                <div class="tree" style="left: 2px; top: 1650px;"></div>
+                <div class="tree small" style="left: 15px; top: 1740px;"></div>
+                <div class="tree dark" style="left: 8px; top: 1830px;"></div>
+                <div class="tree small light" style="left: 20px; top: 1920px;"></div>
+                <div class="tree" style="left: 4px; top: 2010px;"></div>
+                <div class="tree small" style="left: 13px; top: 2100px;"></div>
+                <div class="tree light" style="left: 6px; top: 2190px;"></div>
+                <div class="tree small dark" style="left: 17px; top: 2280px;"></div>
+            </div>
             <div class="wall wall-top-left"></div>
             <div class="wall wall-top-right"></div>
 
@@ -836,79 +2140,62 @@
                 <img src="cece.png" alt="Princess Cecelia" class="token-img">
             </div>
 
-            <div class="target-marker" id="targetMarker">🎯</div>
-
-            <div class="maisie token-frame" id="maisie">
+            <div class="maisie token-frame" id="maisie" style="left: 400px; top: 1200px;">
                 <img src="maisie.png" alt="Maisie" class="token-img">
             </div>
         </div>
-
-        <!-- Day/Night Overlay -->
-        <div class="day-night-overlay" id="dayNightOverlay"></div>
 
         <!-- Placement preview INSIDE viewport so it moves with camera -->
         <div class="placement-preview" id="placementPreview"></div>
         <div class="tower-range-circle" id="rangeCircle"></div>
     </div>
 
-    <div class="controls">
-        <button class="btn btn-primary" id="startWaveBtn" onclick="startWave()">Start Wave</button>
-        <button class="btn btn-primary" onclick="resetGame()">Reset Game</button>
+    <!-- MOBILE D-PAD CONTROLS -->
+    <div class="mobile-dpad" id="mobileDpad">
+        <button class="dpad-btn dpad-up" data-dir="w">▲</button>
+        <button class="dpad-btn dpad-down" data-dir="s">▼</button>
+        <button class="dpad-btn dpad-left" data-dir="a">◀</button>
+        <button class="dpad-btn dpad-right" data-dir="d">▶</button>
     </div>
 
-    <!-- FIXED BOTTOM BUILD BAR -->
-    <div class="build-bar" id="buildBar">
-        <div class="build-option" onclick="enterPlacementMode('basic')">
-            <div class="menu-sprite" style="background-image: url('axel.png');"></div>
-            <div class="build-info">
-                <div class="build-name">Axel Tower</div>
-                <div class="build-cost">🧶 10</div>
+    <!-- RTS Command Panel -->
+    <div class="rts-panel" id="rtsPanel">
+        <div class="rts-panel-toggle" onclick="toggleRtsPanel()">▼</div>
+
+        <!-- Portrait Section -->
+        <div class="rts-portrait">
+            <!-- Default: Portrait + HP + Start Button -->
+            <div class="rts-portrait-content" id="rtsPortraitContent">
+                <div class="rts-portrait-frame">
+                    <div class="rts-portrait-img" id="rtsPortraitImg" style="background-image: url('maisie.png')"></div>
+                </div>
+                <div class="rts-hp-bar">
+                    <div class="rts-hp-fill" id="rtsHpFill" style="width: 100%"></div>
+                </div>
+                <button class="rts-start-btn" id="rtsStartBtn" onclick="startGameFromPanel()">▶ Start</button>
+            </div>
+            <!-- After Game Starts: Wave Queue -->
+            <div class="rts-wave-queue" id="rtsWaveQueue">
+                <div class="rts-wave-queue-title">Waves</div>
+                <!-- Populated dynamically -->
             </div>
         </div>
-        <div class="build-option" onclick="enterPlacementMode('fancy')">
-            <div class="menu-sprite" style="background-image: url('fancy.png');"></div>
-            <div class="build-info">
-                <div class="build-name">Fancy Tower</div>
-                <div class="build-cost">🧶 150</div>
-            </div>
+
+        <!-- Info Section -->
+        <div class="rts-info">
+            <div class="rts-title" id="rtsTitle">Build Tower</div>
+            <div class="rts-stats" id="rtsStats"></div>
+            <div class="rts-desc" id="rtsDesc">Select a tower type to build, then click on the battlefield to place it.</div>
         </div>
-        <div class="build-option" onclick="enterPlacementMode('jet')">
-            <div class="menu-sprite" style="background-image: url('jet.png');"></div>
-            <div class="build-info">
-                <div class="build-name">Jet Tower</div>
-                <div class="build-cost">🧶 180</div>
-            </div>
+
+        <!-- Actions Grid -->
+        <div class="rts-actions" id="rtsActions">
+            <!-- Populated dynamically -->
         </div>
-        <div class="build-option" onclick="enterPlacementMode('kona')">
-            <div class="menu-sprite" style="background-image: url('kona.png');"></div>
-            <div class="build-info">
-                <div class="build-name">Kona Tower</div>
-                <div class="build-cost">🧶 200</div>
-            </div>
-        </div>
-        <div class="build-option" onclick="enterPlacementMode('vacuum')">
-            <div class="menu-icon">🌪️</div>
-            <div class="build-info">
-                <div class="build-name">Vacuum Tower</div>
-                <div class="build-cost">🧶 250</div>
-            </div>
-        </div>
-        <div class="build-option" onclick="enterPlacementMode('antiair')">
-            <div class="menu-icon">🎯</div>
-            <div class="build-info">
-                <div class="build-name">Anti-Air Tower</div>
-                <div class="build-cost">🧶 220</div>
-            </div>
-        </div>
-        <div class="build-option" onclick="enterPlacementMode('heal')">
-            <div class="menu-icon">💚</div>
-            <div class="build-info">
-                <div class="build-name">Healing Tower</div>
-                <div class="build-cost">🧶 280</div>
-            </div>
-        </div>
-        <button class="cancel-btn" id="cancelBtn" onclick="cancelPlacementMode()" style="display:none;">Cancel</button>
     </div>
+
+    <!-- RTS Tooltip -->
+    <div class="rts-tooltip" id="rtsTooltip"></div>
 
     <div class="info-panel" id="infoPanel">
         <div class="info-title" id="infoTitle"></div>
@@ -922,7 +2209,8 @@
             <p style="font-size: 1.2rem; line-height: 1.8;">
                 Defend Princess Cecelia from the endless waves of enemies!<br><br>
                 🗼 Build towers to stop them<br>
-                🐱 Move Maisie with WASD (camera follows!)<br>
+                <span class="desktop-instructions">🐱 Move Maisie with WASD (camera follows!)</span>
+                <span class="mobile-instructions" style="display:none;">🐱 Tap anywhere to move Maisie!</span><br>
                 🧶 Earn coins each wave<br>
                 🎯 Maisie auto-builds when you let go<br><br>
                 Good luck, defender! 🎮
@@ -931,9 +2219,33 @@
         </div>
     </div>
 
+    <!-- GAME OVER MODAL -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content game-over-content">
+            <div class="game-over-icon">💀</div>
+            <h1 class="game-over-title">Game Over!</h1>
+            <p class="game-over-message" id="gameOverMessage">The castle has fallen...</p>
+            <div class="game-over-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Waves Survived</span>
+                    <span class="stat-value" id="finalWave">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Enemies Defeated</span>
+                    <span class="stat-value" id="finalKills">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Gold Earned</span>
+                    <span class="stat-value" id="finalGold">0</span>
+                </div>
+            </div>
+            <button class="btn btn-danger" onclick="resetGame()" style="margin-top: 25px; min-width: 200px;">Try Again</button>
+        </div>
+    </div>
+
     <script>
         // === CAMERA SYSTEM ===
-        let cameraY = 0;
+        let cameraY = 600; // Start camera centered on Maisie (y=1200 - viewport/2)
         const CAMERA_SPEED = 15;
         const MAP_HEIGHT = 2400;
         const VIEWPORT_HEIGHT = window.innerHeight - 70;
@@ -956,6 +2268,8 @@
             health: 100,
             coins: 120,
             wave: 1,
+            totalKills: 0,
+            totalGold: 0,
             waveActive: false,
             placementMode: false,
             selectedType: null,
@@ -969,53 +2283,317 @@
             pathMap: Array(HALF_COLS).fill(null).map(() => Array(HALF_ROWS).fill(0)),
             maisie: { x: 400, y: 1200, targetX: null, targetY: null, speed: 3, buildTarget: null, webbed: false }, // Start in middle of map
             instantBuild: false,
+            godMode: false,
+            gameSpeed: 1,
             devMultiplier: 1,
-            dayNightCycle: {
-                time: 0,
-                period: 180, // 180 seconds = 3 minutes full cycle
-                phase: 'day'
+            paused: false,
+            mobileScale: 1, // Scale factor for mobile viewport
+            // Click indicator & achievements
+            clickIndicator: 'rune', // Current style: 'rune', 'paw', 'sparkle'
+            achievements: {
+                firstTower: false,   // Unlocks 'paw' indicator
+                wave10: false        // Unlocks 'sparkle' indicator
             }
         };
 
         const towerTypes = {
-            basic: { name: 'Axel Tower', sprite: 'axel.png', cost: 10, damage: 7, range: 180, cooldown: 1 },
-            fancy: { name: 'Fancy Tower', sprite: 'fancy.png', cost: 150, damage: 30, range: 150, cooldown: 0.8 },
-            jet: { name: 'Jet Tower', sprite: 'jet.png', cost: 180, damage: 40, range: 160, cooldown: 1.0 },
-            kona: { name: 'Kona Tower', sprite: 'kona.png', evolveSprite: 'kona-evolved.png', cost: 200, damage: 50, range: 180, cooldown: 1.2, evolveLevel: 3, evolveName: 'Kona Evolved' },
-            vacuum: { name: 'Vacuum Tower', icon: '🌪️', cost: 250, damage: 0, range: 200, cooldown: 2, isVacuum: true },
-            antiair: { name: 'Anti-Air Tower', icon: '🎯', cost: 220, damage: 45, range: 200, cooldown: 0.7, canHitFlying: true, canHitGround: false },
-            heal: { name: 'Healing Tower', icon: '💚', cost: 280, damage: 0, range: 600, cooldown: 1.5, isHeal: true, healAmount: 7.5 }
+            basic: { name: 'Axel Tower', sprite: 'axel.png', cost: 10, damage: 7, range: 180, cooldown: 1, attackType: 'Single Target', desc: 'Basic tower with balanced stats. Good for early defense.' },
+            fancy: { name: 'Fancy Tower', sprite: 'fancy.png', cost: 150, damage: 30, range: 150, cooldown: 0.8, attackType: 'Single Target', desc: 'Fast-firing tower with high damage output.' },
+            jet: { name: 'Jet Tower', sprite: 'jet.png', cost: 180, damage: 40, range: 160, cooldown: 1.0, attackType: 'Single Target', desc: 'Powerful tower with excellent range and damage.' },
+            kona: { name: 'Kona Tower', sprite: 'kona.png', evolveSprite: 'kona-evolved.png', cost: 200, damage: 18, range: 180, cooldown: 1.2, evolveLevel: 3, evolveName: 'Kona Evolved', hasSuck: true, suckStrength: 1.38, suckCount: 3, suckMinDist: 50, attackType: 'Single + Vacuum', desc: 'Vacuum ability pulls nearby enemies toward the tower, slowing their progress. Evolves at level 3!' },
+            vacuum: { name: 'Vacuum Tower', icon: '🌪️', cost: 250, damage: 0, range: 200, cooldown: 2, isVacuum: true, attackType: 'Utility', desc: 'Creates a vortex that pulls all enemies in range toward it.' },
+            antiair: { name: 'Anti-Air Tower', icon: '🎯', cost: 220, damage: 45, range: 200, cooldown: 0.7, canHitFlying: true, canHitGround: false, attackType: 'Air Only', desc: 'Specialized tower that can only target flying enemies like bats.' },
+            heal: { name: 'Lily Tower', sprite: 'lily-healer.jpg', cost: 280, damage: 0, range: 600, cooldown: 1.5, isHeal: true, healAmount: 7.5, attackType: 'Support', desc: 'Heals nearby damaged towers over time. Also heals itself at reduced rate.' }
         };
+
+        // === WAVE DEFINITIONS ===
+        const waveDefinitions = {
+            1: { enemies: ['loki'], count: 30, spawnDelay: 400, name: 'Loki Swarm', icon: '🐱', desc: 'Weak but fast cats' },
+            2: { enemies: ['ghost'], count: 15, spawnDelay: 800, name: 'Ghost Invasion', icon: '👻', desc: 'Spooky specters' },
+            3: { enemies: ['spider'], count: 12, spawnDelay: 1000, name: 'Spider Nest', icon: '🕷️', desc: 'Web-slinging arachnids' },
+            4: { enemies: ['bat'], count: 10, spawnDelay: 900, name: 'Bat Swarm', icon: '🦇', desc: 'Flying enemies - need Anti-Air!' },
+            5: { enemies: ['loki', 'ghost', 'spider', 'bat'], count: 20, spawnDelay: 600, boss: true, name: 'BOSS WAVE', icon: '👹', desc: 'Hazel + all enemy types!' },
+            // Repeat pattern with increasing difficulty
+            6: { enemies: ['loki', 'golem'], count: 25, spawnDelay: 500, name: 'Loki & Golems', icon: '🗿', desc: 'Fast cats and slow tanks' },
+            7: { enemies: ['ghost', 'spider'], count: 18, spawnDelay: 700, name: 'Night Terrors', icon: '👻', desc: 'Ghosts and spiders' },
+            8: { enemies: ['bat', 'spider'], count: 15, spawnDelay: 800, name: 'Sky & Ground', icon: '🦇', desc: 'Air and ground assault' },
+            9: { enemies: ['golem', 'ghost'], count: 12, spawnDelay: 1000, name: 'Heavy Haunts', icon: '🗿', desc: 'Tanks and specters' },
+            10: { enemies: ['loki', 'ghost', 'spider', 'bat', 'golem'], count: 25, spawnDelay: 500, boss: true, name: 'FINAL BOSS', icon: '🔥', desc: 'Everything at once!' }
+        };
+
+        // Get wave info (cycles after wave 10 with scaling)
+        function getWaveInfo(waveNum) {
+            if (waveDefinitions[waveNum]) return waveDefinitions[waveNum];
+            // For waves beyond 10, cycle through 6-10 with increased difficulty
+            const cycleWave = ((waveNum - 6) % 5) + 6;
+            const baseWave = waveDefinitions[cycleWave];
+            return {
+                ...baseWave,
+                count: baseWave.count + Math.floor((waveNum - 10) / 5) * 5,
+                name: baseWave.name + ' +',
+                desc: baseWave.desc + ' (harder)'
+            };
+        }
 
         // === KEYBOARD INPUT ===
         const keys = {};
         window.addEventListener('keydown', e => {
             keys[e.key.toLowerCase()] = true;
-            if (e.key === 'Escape') cancelPlacementMode();
+            if (e.key === 'Escape') {
+                if (gameState.placementMode) {
+                    cancelPlacementMode();
+                } else {
+                    toggleMenu();
+                }
+            }
         });
         window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+        // === MOBILE DETECTION & SCALING ===
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                         ('ontouchstart' in window) ||
+                         (window.matchMedia && window.matchMedia('(max-width: 850px)').matches);
+
+        // Set up mobile viewport scaling to fit walls to screen edges
+        function setupMobileScaling() {
+            function applyScale() {
+                const screenWidth = window.innerWidth;
+                // Game canvas is 800px wide - scale to fit screen
+                if (screenWidth < 800) {
+                    const scale = screenWidth / 800;
+                    gameState.mobileScale = scale;
+                    // Scale is applied in updateCamera()
+                    viewport.style.width = screenWidth + 'px';
+                } else {
+                    gameState.mobileScale = 1;
+                }
+                // Trigger camera update to apply scale
+                updateCamera();
+            }
+
+            // Apply on load and resize
+            window.addEventListener('resize', applyScale);
+            // Initial call is deferred to after init
+            setTimeout(applyScale, 100);
+        }
+
+        // D-Pad touch controls (legacy - click-to-move is primary now)
+        function setupMobileControls() {
+            const dpadBtns = document.querySelectorAll('.dpad-btn');
+
+            dpadBtns.forEach(btn => {
+                const dir = btn.dataset.dir;
+
+                // Touch start - begin movement
+                btn.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    keys[dir] = true;
+                }, { passive: false });
+
+                // Touch end - stop movement
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    keys[dir] = false;
+                }, { passive: false });
+
+                // Touch cancel - stop movement
+                btn.addEventListener('touchcancel', (e) => {
+                    keys[dir] = false;
+                });
+
+                // Also handle mouse for testing on desktop
+                btn.addEventListener('mousedown', () => keys[dir] = true);
+                btn.addEventListener('mouseup', () => keys[dir] = false);
+                btn.addEventListener('mouseleave', () => keys[dir] = false);
+            });
+        }
+
+        // Touch handling for tower placement AND click-to-move
+        function setupTouchPlacement() {
+            let touchStartTime = 0;
+            let touchStartPos = { x: 0, y: 0 };
+            let isDragging = false;
+            // Double-tap placement state for mobile
+            let pendingPlacement = null; // { gridX, gridY, timestamp } or null
+            const DOUBLE_TAP_TIMEOUT = 2000; // 2 seconds to confirm placement
+            const TAP_DISTANCE_THRESHOLD = 30; // More forgiving tap detection
+            const TAP_TIME_THRESHOLD = 400; // More forgiving tap timing
+            const GRID_TOLERANCE = 40; // Tolerance for "same spot" detection
+
+            viewport.addEventListener('touchstart', (e) => {
+                touchStartTime = Date.now();
+                const touch = e.touches[0];
+                touchStartPos = { x: touch.clientX, y: touch.clientY };
+                isDragging = false;
+
+                if (gameState.placementMode) {
+                    e.preventDefault();
+                    const rect = viewport.getBoundingClientRect();
+                    const touchX = touch.clientX - rect.left;
+                    const touchY = touch.clientY - rect.top;
+                    const scale = gameState.mobileScale || 1;
+                    const canvasX = touchX / scale;
+                    const canvasY = (touchY / scale) + cameraY;
+                    const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
+                    const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
+
+                    // Update preview position
+                    preview.style.left = (gridX * scale) + 'px';
+                    preview.style.top = ((gridY - cameraY) * scale) + 'px';
+                    preview.className = 'placement-preview ' + (isValidPlacement(gridX, gridY) ? 'valid' : 'invalid');
+                }
+            }, { passive: false });
+
+            viewport.addEventListener('touchend', (e) => {
+                const touch = e.changedTouches[0];
+                const rect = viewport.getBoundingClientRect();
+                const touchX = touch.clientX - rect.left;
+                const touchY = touch.clientY - rect.top;
+                const scale = gameState.mobileScale || 1;
+                const canvasX = touchX / scale;
+                const canvasY = (touchY / scale) + cameraY;
+
+                // Check if this was a tap (not a drag) - more forgiving thresholds
+                const dx = touch.clientX - touchStartPos.x;
+                const dy = touch.clientY - touchStartPos.y;
+                const dragDistance = Math.sqrt(dx*dx + dy*dy);
+                const tapDuration = Date.now() - touchStartTime;
+                const wasTap = dragDistance < TAP_DISTANCE_THRESHOLD && tapDuration < TAP_TIME_THRESHOLD;
+
+                // Track if we placed a tower this tap (to avoid triggering move)
+                let placedTower = false;
+
+                // Clear expired pending placement
+                if (pendingPlacement && (Date.now() - pendingPlacement.timestamp > DOUBLE_TAP_TIMEOUT)) {
+                    pendingPlacement = null;
+                    preview.classList.remove('confirm-ready');
+                }
+
+                if (gameState.placementMode && wasTap) {
+                    e.preventDefault();
+                    const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
+                    const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
+
+                    if (isValidPlacement(gridX, gridY)) {
+                        // Double-tap to place: check if tapping near same location (with tolerance)
+                        if (pendingPlacement &&
+                            Math.abs(pendingPlacement.gridX - gridX) <= GRID_TOLERANCE &&
+                            Math.abs(pendingPlacement.gridY - gridY) <= GRID_TOLERANCE) {
+                            // Second tap near same spot - place the tower!
+                            placeTower(gameState.selectedType, gridX, gridY);
+                            pendingPlacement = null;
+                            placedTower = true;
+                        } else {
+                            // First tap - show preview and wait for confirmation
+                            pendingPlacement = { gridX, gridY, timestamp: Date.now() };
+                            // Visual feedback - make preview pulse
+                            preview.classList.add('confirm-ready');
+                            showMaisieSpeech("Tap again to build!");
+                        }
+                    } else {
+                        pendingPlacement = null;
+                        preview.classList.remove('confirm-ready');
+                    }
+                } else if (wasTap && !gameState.placementMode && !placedTower) {
+                    // RTS-style tap-to-move Maisie
+                    e.preventDefault();
+                    const targetX = Math.max(40, Math.min(680, canvasX));
+                    const targetY = Math.max(100, Math.min(2350, canvasY));
+
+                    // Only clear buildTarget if Maisie isn't actively building
+                    if (!gameState.maisie.buildTarget || gameState.maisie.buildTarget.buildProgress === 0) {
+                        setMaisieTarget(targetX, targetY);
+                        gameState.maisie.buildTarget = null;
+                    } else {
+                        // Maisie is building - show feedback
+                        showMaisieSpeech("Building...");
+                    }
+                }
+
+                // Clear pending placement if exiting placement mode or if dragged
+                if (!gameState.placementMode || isDragging) {
+                    pendingPlacement = null;
+                    preview.classList.remove('confirm-ready');
+                }
+            }, { passive: false });
+
+            viewport.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                const dx = touch.clientX - touchStartPos.x;
+                const dy = touch.clientY - touchStartPos.y;
+
+                // Mark as dragging if moved significantly
+                if (Math.sqrt(dx*dx + dy*dy) > 15) {
+                    isDragging = true;
+                    // Clear pending placement when dragging
+                    if (pendingPlacement) {
+                        pendingPlacement = null;
+                        preview.classList.remove('confirm-ready');
+                    }
+                }
+
+                if (!gameState.placementMode) return;
+                e.preventDefault();
+
+                const rect = viewport.getBoundingClientRect();
+                const touchX = touch.clientX - rect.left;
+                const touchY = touch.clientY - rect.top;
+                const scale = gameState.mobileScale || 1;
+                const canvasX = touchX / scale;
+                const canvasY = (touchY / scale) + cameraY;
+                const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
+                const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
+
+                preview.style.left = (gridX * scale) + 'px';
+                preview.style.top = ((gridY - cameraY) * scale) + 'px';
+                preview.className = 'placement-preview ' + (isValidPlacement(gridX, gridY) ? 'valid' : 'invalid');
+            }, { passive: false });
+        }
 
         // === CAMERA SCROLLING (Follows Maisie) ===
         function updateCamera() {
             // Center camera on Maisie's Y position
-            const targetCameraY = gameState.maisie.y - (VIEWPORT_HEIGHT / 2);
-            cameraY = Math.max(0, Math.min(MAX_CAMERA_Y, targetCameraY));
-            
-            canvas.style.transform = `translateY(-${cameraY}px)`;
+            const scale = gameState.mobileScale || 1;
+            const scaledViewportHeight = VIEWPORT_HEIGHT / scale;
+            const targetCameraY = gameState.maisie.y - (scaledViewportHeight / 2);
+            const scaledMaxCameraY = MAP_HEIGHT - scaledViewportHeight;
+            cameraY = Math.max(0, Math.min(scaledMaxCameraY, targetCameraY));
+
+            // Apply both camera translation and mobile scaling
+            if (scale !== 1) {
+                canvas.style.transform = `scale(${scale}) translateY(-${cameraY}px)`;
+                canvas.style.transformOrigin = 'top left';
+            } else {
+                canvas.style.transform = `translateY(-${cameraY}px)`;
+            }
         }
 
         // === MOUSE INPUT (Fixed for viewport positioning!) ===
         viewport.addEventListener('click', e => {
-            if (!gameState.placementMode) return;
+            // Hide tower tooltip when clicking on map
+            hideBuildTooltip();
+
             const rect = viewport.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-            // Convert viewport coords to canvas coords
-            const canvasX = mouseX;
-            const canvasY = mouseY + cameraY;
-            const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
-            const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
-            if (isValidPlacement(gridX, gridY)) placeTower(gameState.selectedType, gridX, gridY);
+            // Convert viewport coords to canvas coords (accounting for mobile scale)
+            const scale = gameState.mobileScale || 1;
+            const canvasX = mouseX / scale;
+            const canvasY = (mouseY / scale) + cameraY;
+
+            // If in placement mode, try to place tower
+            if (gameState.placementMode) {
+                const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
+                const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
+                if (isValidPlacement(gridX, gridY)) placeTower(gameState.selectedType, gridX, gridY);
+                return;
+            }
+
+            // RTS-style click-to-move Maisie (within wall boundaries)
+            const targetX = Math.max(40, Math.min(680, canvasX));
+            const targetY = Math.max(100, Math.min(2350, canvasY));
+            setMaisieTarget(targetX, targetY);
+            gameState.maisie.buildTarget = null; // Cancel any building in progress
         });
 
         viewport.addEventListener('mousemove', e => {
@@ -1023,20 +2601,28 @@
             const rect = viewport.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-            // Convert viewport coords to canvas coords
-            const canvasX = mouseX;
-            const canvasY = mouseY + cameraY;
+            // Convert viewport coords to canvas coords (accounting for mobile scale)
+            const scale = gameState.mobileScale || 1;
+            const canvasX = mouseX / scale;
+            const canvasY = (mouseY / scale) + cameraY;
             const gridX = Math.floor((canvasX - 40) / (CELL/2)) * (CELL/2) + 40;
             const gridY = Math.floor((canvasY - 100) / (CELL/2)) * (CELL/2) + 100;
-            // Position preview in VIEWPORT space (subtract camera offset)
-            preview.style.left = (gridX) + 'px';
-            preview.style.top = (gridY - cameraY) + 'px';
+            // Position preview in VIEWPORT space (subtract camera offset, apply scale)
+            preview.style.left = (gridX * scale) + 'px';
+            preview.style.top = ((gridY - cameraY) * scale) + 'px';
             preview.className = 'placement-preview ' + (isValidPlacement(gridX, gridY) ? 'valid' : 'invalid');
         });
 
         // === PATH SYSTEM ===
         function updatePathMap() {
             for(let c=0; c<HALF_COLS; c++) for(let r=0; r<HALF_ROWS; r++) gameState.pathMap[c][r] = 0;
+
+            // Block rightmost 2 columns as hard wall (like left side)
+            for(let r=0; r<HALF_ROWS; r++) {
+                gameState.pathMap[HALF_COLS-1][r] = 9999; // Block column 15 (right edge)
+                gameState.pathMap[HALF_COLS-2][r] = 9999; // Block column 14
+            }
+
             gameState.towers.forEach(t => {
                 const col = Math.floor((t.x - 40) / HALF_CELL);
                 const row = Math.floor((t.y - 100) / HALF_CELL);
@@ -1077,7 +2663,23 @@
         }
 
         function isValidPlacement(x, y) {
-            if(x < 40 || x > 720 || y < 100 || y > 2180) return false;  // 720 = max x so tower (80px wide) doesn't exceed 800px boundary
+            // Walls: left wall is 0-40px, right wall is 760-800px
+            // Towers are 80px wide, so valid x range is 40 to 680 (680 + 80 = 760)
+            // Valid y range: 100 (below top walls) to 2180 (above bottom area)
+            if(x < 40 || x > 680 || y < 100 || y > 2180) return false;
+
+            // Block placement on the target marker zone (where mobs go after spawn)
+            // Target marker is at (360, 580) with size 80x80
+            const markerX = 360;
+            const markerY = 580;
+            const markerSize = 80;
+
+            // Check if tower (80x80) would overlap with marker zone
+            if(!(x + 80 <= markerX || x >= markerX + markerSize ||
+                 y + 80 <= markerY || y >= markerY + markerSize)) {
+                return false;
+            }
+
             const col = Math.floor((x - 40) / HALF_CELL);
             const row = Math.floor((y - 100) / HALF_CELL);
 
@@ -1100,26 +2702,48 @@
                 }
             }
 
-            const queue = [{c: Math.floor(HALF_COLS/2), r: TARGET_ROW, dist: 0}];
+            // Start BFS from marker center (column 9 = x:400, row 13 = y:620)
+            const markerCol = Math.floor((MARKER_CENTER_X - 40) / HALF_CELL); // Column 9
+            const markerRow = Math.floor((MARKER_CENTER_Y - 100) / HALF_CELL); // Row 13
+            const queue = [{c: markerCol, r: markerRow, dist: 0}];
             const visited = new Set();
             let canReach = false;
+
+            // Helper to check if cell is blocked
+            const isBlocked = (col, row) => {
+                if(col < 0 || col >= HALF_COLS || row < 0 || row >= HALF_ROWS) return true;
+                return gameState.pathMap[col][row] === 9999;
+            };
+
             while(queue.length > 0) {
                 const {c, r, dist} = queue.shift();
                 const key = `${c},${r}`;
                 if(visited.has(key)) continue;
                 visited.add(key);
-                if(gameState.pathMap[c][r] === 9999) continue;
+                if(isBlocked(c, r)) continue;
                 if(r >= HALF_ROWS-2) { canReach = true; break; } // Check if castle area is reachable from marker
-                // Include diagonals for shortcuts
-                const neighbors = [
-                    [c-1,r], [c+1,r], [c,r-1], [c,r+1],  // Cardinal directions
-                    [c-1,r-1], [c-1,r+1], [c+1,r-1], [c+1,r+1]  // Diagonals
+
+                // Cardinal directions (always allowed if not blocked)
+                const cardinalNeighbors = [
+                    [c-1, r], [c+1, r], [c, r-1], [c, r+1]
                 ];
-                neighbors.forEach(([nc,nr]) => {
-                    if(nc>=0 && nc<HALF_COLS && nr>=0 && nr<HALF_ROWS && !visited.has(`${nc},${nr}`)) {
-                        const isDiagonal = nc !== c && nr !== r;
-                        const moveCost = isDiagonal ? 1.414 : 1;
-                        queue.push({c:nc, r:nr, dist: dist + moveCost});
+
+                // Diagonal directions (only allowed if adjacent cells are clear - no corner cutting)
+                const diagonalNeighbors = [];
+                if(!isBlocked(c-1, r) && !isBlocked(c, r-1)) diagonalNeighbors.push([c-1, r-1]); // Up-left
+                if(!isBlocked(c+1, r) && !isBlocked(c, r-1)) diagonalNeighbors.push([c+1, r-1]); // Up-right
+                if(!isBlocked(c-1, r) && !isBlocked(c, r+1)) diagonalNeighbors.push([c-1, r+1]); // Down-left
+                if(!isBlocked(c+1, r) && !isBlocked(c, r+1)) diagonalNeighbors.push([c+1, r+1]); // Down-right
+
+                cardinalNeighbors.forEach(([nc, nr]) => {
+                    if(nc >= 0 && nc < HALF_COLS && nr >= 0 && nr < HALF_ROWS && !visited.has(`${nc},${nr}`)) {
+                        queue.push({c: nc, r: nr, dist: dist + 1});
+                    }
+                });
+
+                diagonalNeighbors.forEach(([nc, nr]) => {
+                    if(nc >= 0 && nc < HALF_COLS && nr >= 0 && nr < HALF_ROWS && !visited.has(`${nc},${nr}`)) {
+                        queue.push({c: nc, r: nr, dist: dist + 1.414});
                     }
                 });
             }
@@ -1130,22 +2754,177 @@
         }
 
         // === PLACEMENT ===
+        // === RTS PANEL FUNCTIONS ===
+        function toggleRtsPanel() {
+            const panel = document.getElementById('rtsPanel');
+            const toggle = panel.querySelector('.rts-panel-toggle');
+            panel.classList.toggle('minimized');
+            toggle.textContent = panel.classList.contains('minimized') ? '▲' : '▼';
+        }
+
+        function updateRtsPanel(mode, data) {
+            const portrait = document.getElementById('rtsPortraitImg');
+            const hpFill = document.getElementById('rtsHpFill');
+            const title = document.getElementById('rtsTitle');
+            const stats = document.getElementById('rtsStats');
+            const desc = document.getElementById('rtsDesc');
+            const actions = document.getElementById('rtsActions');
+
+            if (mode === 'build') {
+                // Show build mode - tower selection
+                portrait.style.backgroundImage = "url('maisie.png')";
+                hpFill.style.width = '100%';
+                title.textContent = 'Build Tower';
+                // Add indicator selector
+                stats.innerHTML = `
+                    <div style="color: #888; font-size: 0.75rem; margin-bottom: 3px;">Click Style:</div>
+                    <div class="indicator-selector" id="indicatorSelector"></div>
+                `;
+                setTimeout(updateIndicatorSelector, 0);
+                desc.textContent = 'Select a tower to build.';
+
+                // Populate action buttons with tower types
+                let buttonsHTML = '';
+                Object.entries(towerTypes).forEach(([key, type]) => {
+                    const disabled = gameState.coins < type.cost ? 'disabled' : '';
+                    const selected = gameState.placementMode && gameState.selectedType === key ? 'selected' : '';
+                    const iconHTML = type.sprite
+                        ? `<div class="rts-btn-icon" style="background-image: url('${type.sprite}')"></div>`
+                        : `<div class="rts-btn-icon">${type.icon || '🗼'}</div>`;
+                    buttonsHTML += `
+                        <div class="rts-btn ${disabled} ${selected}" data-tower="${key}"
+                             onclick="enterPlacementMode('${key}')"
+                             onmouseenter="showBuildTooltip(event, '${key}')"
+                             onmouseleave="hideBuildTooltip()">
+                            ${iconHTML}
+                            <span class="rts-btn-cost">${type.cost}</span>
+                        </div>
+                    `;
+                });
+                actions.innerHTML = buttonsHTML;
+            } else if (mode === 'selected' && data) {
+                // Show selected tower info
+                const tower = data;
+                const type = towerTypes[tower.type];
+
+                let displayName = type.name;
+                let currentSprite = type.sprite;
+                if (type.evolveLevel && tower.level >= type.evolveLevel) {
+                    displayName = type.evolveName;
+                    if (type.evolveSprite) currentSprite = type.evolveSprite;
+                }
+
+                if (currentSprite) {
+                    portrait.style.backgroundImage = `url('${currentSprite}')`;
+                } else {
+                    portrait.style.backgroundImage = 'none';
+                }
+                hpFill.style.width = `${(tower.health / tower.maxHealth) * 100}%`;
+                title.textContent = displayName + (tower.level > 1 ? ` Lv.${tower.level}` : '');
+
+                let statsHTML = '';
+                if (type.damage > 0) {
+                    statsHTML += `<div class="rts-stat"><span class="rts-stat-icon">⚔️</span> Damage: <span class="rts-stat-value">${type.damage * tower.level}</span></div>`;
+                }
+                if (type.isHeal) {
+                    statsHTML += `<div class="rts-stat"><span class="rts-stat-icon">💚</span> Heal: <span class="rts-stat-value">${type.healAmount * tower.level}</span></div>`;
+                }
+                statsHTML += `<div class="rts-stat"><span class="rts-stat-icon">📏</span> Range: <span class="rts-stat-value">${type.range + (tower.level * 10)}</span></div>`;
+                statsHTML += `<div class="rts-stat"><span class="rts-stat-icon">⚡</span> Speed: <span class="rts-stat-value">${(1/type.cooldown).toFixed(1)}/s</span></div>`;
+                stats.innerHTML = statsHTML;
+
+                desc.textContent = type.desc;
+
+                const sellAmt = Math.floor(type.cost * 0.5 * tower.level);
+                const upCost = Math.floor(type.cost * 0.8 * tower.level);
+                const upgradeDisabled = gameState.coins < upCost || !tower.built ? 'disabled' : '';
+
+                actions.innerHTML = `
+                    <div class="rts-btn upgrade ${upgradeDisabled}" onclick="upgradeTower(${upCost})">
+                        <div class="rts-btn-icon">⬆️</div>
+                        <span class="rts-btn-cost">${upCost}</span>
+                    </div>
+                    <div class="rts-btn sell" onclick="sellTower(${sellAmt})">
+                        <div class="rts-btn-icon">💰</div>
+                        <span class="rts-btn-cost">+${sellAmt}</span>
+                    </div>
+                    <div class="rts-btn" onclick="closeInfoPanel()">
+                        <div class="rts-btn-icon">✕</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Tooltip for build buttons
+        let tooltipHoveredBtn = null;
+
+        function showBuildTooltip(event, towerKey) {
+            const type = towerTypes[towerKey];
+            const tooltip = document.getElementById('rtsTooltip');
+            const btn = event.target.closest('.rts-btn');
+            tooltipHoveredBtn = btn;
+
+            let statsHTML = '';
+            if (type.damage > 0) statsHTML += `<div class="rts-tooltip-stat">Damage: <span>${type.damage}</span></div>`;
+            if (type.isHeal) statsHTML += `<div class="rts-tooltip-stat">Heal: <span>${type.healAmount}</span></div>`;
+            statsHTML += `<div class="rts-tooltip-stat">Range: <span>${type.range}</span></div>`;
+
+            tooltip.innerHTML = `
+                <div class="rts-tooltip-title">${type.name}</div>
+                <div class="rts-tooltip-cost">🧶 ${type.cost} Gold</div>
+                ${statsHTML}
+                <div class="rts-tooltip-desc">${type.desc}</div>
+            `;
+
+            // Position tooltip above the hovered button
+            const rect = btn.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
+            tooltip.classList.add('active');
+        }
+
+        function hideBuildTooltip() {
+            document.getElementById('rtsTooltip').classList.remove('active');
+            tooltipHoveredBtn = null;
+        }
+
+        // Hide tooltip when clicking anywhere
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.rts-btn')) {
+                hideBuildTooltip();
+            }
+        });
+
+        // Hide tooltip when mouse moves and isn't over a tower button
+        document.addEventListener('mousemove', e => {
+            if (tooltipHoveredBtn && !e.target.closest('.rts-btn[data-tower]')) {
+                hideBuildTooltip();
+            }
+        });
+
         function enterPlacementMode(type) {
             gameState.placementMode = true;
             gameState.selectedType = type;
             preview.style.display = 'block';
-            document.getElementById('cancelBtn').style.display = 'block';
+            // Update RTS panel to show selected tower
+            updateRtsPanel('build');
+            hideBuildTooltip();
         }
 
         function cancelPlacementMode() {
             gameState.placementMode = false;
+            gameState.selectedType = null;
             preview.style.display = 'none';
-            document.getElementById('cancelBtn').style.display = 'none';
+            preview.classList.remove('confirm-ready');
+            updateRtsPanel('build');
         }
 
         function placeTower(type, x, y) {
             const info = towerTypes[type];
-            if(gameState.coins < info.cost) return;
+            if(gameState.coins < info.cost) {
+                showMaisieSpeech("Not enough gold!");
+                return;
+            }
             gameState.coins -= info.cost;
             updateStats();
             const tower = {
@@ -1175,8 +2954,14 @@
             gameState.towers.push(tower);
             updatePathMap();
             if (gameState.instantBuild) finishTower(tower);
-            else setMaisieTarget(x + 40, y + 40);
+            else setMaisieTarget(x + 40, y + 40, false);
             cancelPlacementMode();
+            hideBuildTooltip();
+            // Achievement: First tower placed
+            if (!gameState.achievements.firstTower) {
+                gameState.achievements.firstTower = true;
+                showAchievement('Paw Print', 'Built your first tower!', 'paw');
+            }
         }
 
         function finishTower(tower) {
@@ -1185,13 +2970,80 @@
             tower.element.querySelector('.tower-build-bar').style.display = 'none';
         }
 
+        // === MAISIE SPEECH BUBBLE ===
+        function showMaisieSpeech(message) {
+            // Remove any existing speech bubble
+            const existing = document.querySelector('.maisie-speech');
+            if(existing) existing.remove();
+
+            const speech = document.createElement('div');
+            speech.className = 'maisie-speech';
+            speech.textContent = message;
+            // Append to Maisie element so it moves with her
+            maisie.appendChild(speech);
+            setTimeout(() => speech.remove(), 2000);
+        }
+
+        // === RTS CLICK INDICATOR ===
+        function spawnClickIndicator(canvasX, canvasY) {
+            const scale = gameState.mobileScale || 1;
+            const indicator = document.createElement('div');
+            indicator.className = 'click-indicator ' + gameState.clickIndicator;
+            // Convert canvas coords to viewport coords (apply scale)
+            indicator.style.left = (canvasX * scale) + 'px';
+            indicator.style.top = ((canvasY - cameraY) * scale) + 'px';
+            document.getElementById('gameViewport').appendChild(indicator);
+            // Remove after animation completes
+            setTimeout(() => indicator.remove(), 600);
+        }
+
+        // === ACHIEVEMENT SYSTEM ===
+        const indicatorIcons = { rune: '✦', paw: '🐾', sparkle: '✨' };
+
+        function showAchievement(name, description, indicatorUnlocked) {
+            const popup = document.createElement('div');
+            popup.className = 'achievement-popup';
+            popup.innerHTML = `
+                <div class="achievement-icon">${indicatorIcons[indicatorUnlocked]}</div>
+                <div class="achievement-text">
+                    <div class="achievement-title">🏆 ${name} Unlocked!</div>
+                    <div class="achievement-desc">${description}</div>
+                    <div class="achievement-unlock">New click style available!</div>
+                </div>
+            `;
+            document.body.appendChild(popup);
+            setTimeout(() => popup.remove(), 4000);
+            // Update indicator selector if panel is open
+            updateIndicatorSelector();
+        }
+
+        function selectIndicator(style) {
+            // Check if locked
+            if (style === 'paw' && !gameState.achievements.firstTower) return;
+            if (style === 'sparkle' && !gameState.achievements.wave10) return;
+            gameState.clickIndicator = style;
+            updateIndicatorSelector();
+        }
+
+        function updateIndicatorSelector() {
+            const selector = document.getElementById('indicatorSelector');
+            if (!selector) return;
+            selector.innerHTML = `
+                <div class="indicator-option ${gameState.clickIndicator === 'rune' ? 'active' : ''}"
+                     onclick="selectIndicator('rune')" title="Magic Rune">✦</div>
+                <div class="indicator-option ${gameState.clickIndicator === 'paw' ? 'active' : ''} ${!gameState.achievements.firstTower ? 'locked' : ''}"
+                     onclick="selectIndicator('paw')" title="Paw Print - Build a tower to unlock">🐾</div>
+                <div class="indicator-option ${gameState.clickIndicator === 'sparkle' ? 'active' : ''} ${!gameState.achievements.wave10 ? 'locked' : ''}"
+                     onclick="selectIndicator('sparkle')" title="Sparkle Burst - Complete wave 10 to unlock">✨</div>
+            `;
+        }
+
         // === MAISIE AI + MANUAL CONTROL ===
-        function setMaisieTarget(x, y) {
+        function setMaisieTarget(x, y, showIndicator = true) {
             gameState.maisie.targetX = x;
             gameState.maisie.targetY = y;
-            document.getElementById('targetMarker').style.left = x + 'px';
-            document.getElementById('targetMarker').style.top = y + 'px';
-            document.getElementById('targetMarker').style.display = 'block';
+            // Spawn click indicator only for manual movement
+            if (showIndicator) spawnClickIndicator(x, y);
         }
 
         function updateMaisie() {
@@ -1209,7 +3061,7 @@
                 moved = true;
             }
             if(keys['s']) {
-                gameState.maisie.y = Math.min(2300, gameState.maisie.y + manualSpeed);
+                gameState.maisie.y = Math.min(2350, gameState.maisie.y + manualSpeed);
                 moved = true;
             }
             if(keys['a']) {
@@ -1217,7 +3069,7 @@
                 moved = true;
             }
             if(keys['d']) {
-                gameState.maisie.x = Math.min(760, gameState.maisie.x + manualSpeed);
+                gameState.maisie.x = Math.min(680, gameState.maisie.x + manualSpeed);
                 moved = true;
             }
             
@@ -1225,26 +3077,25 @@
             if(moved) {
                 gameState.maisie.targetX = null;
                 gameState.maisie.targetY = null;
-                document.getElementById('targetMarker').style.display = 'none';
             }
             
             // AUTO MOVEMENT to build towers (only if not manually controlled)
             if(!moved && gameState.maisie.targetX === null) {
                 const unbuilt = gameState.towers.find(t => !t.built);
-                if(unbuilt) setMaisieTarget(unbuilt.x + 40, unbuilt.y + 40);
+                if(unbuilt) setMaisieTarget(unbuilt.x + 40, unbuilt.y + 40, false);
             }
             
             if(!moved && gameState.maisie.targetX !== null) {
                 const dx = gameState.maisie.targetX - gameState.maisie.x;
                 const dy = gameState.maisie.targetY - gameState.maisie.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
-                if(dist < 5) {
-                    const tower = gameState.towers.find(t => !t.built && Math.abs(t.x + 40 - gameState.maisie.x) < 5 && Math.abs(t.y + 40 - gameState.maisie.y) < 5);
+                if(dist < 15) {
+                    // Increased tolerance for mobile - check within 20px of tower center
+                    const tower = gameState.towers.find(t => !t.built && Math.abs(t.x + 40 - gameState.maisie.x) < 20 && Math.abs(t.y + 40 - gameState.maisie.y) < 20);
                     if(tower) {
                         gameState.maisie.buildTarget = tower;
                         gameState.maisie.targetX = null;
                         gameState.maisie.targetY = null;
-                        document.getElementById('targetMarker').style.display = 'none';
                     }
                 } else {
                     // Apply webbed speed penalty to auto-movement too
@@ -1255,6 +3106,18 @@
             }
             
             // BUILD TOWERS when near them
+            // Fallback: if Maisie is near an unbuilt tower without a buildTarget, start building
+            if(!gameState.maisie.buildTarget) {
+                const nearbyTower = gameState.towers.find(t => !t.built &&
+                    Math.abs(t.x + 40 - gameState.maisie.x) < 25 &&
+                    Math.abs(t.y + 40 - gameState.maisie.y) < 25);
+                if(nearbyTower) {
+                    gameState.maisie.buildTarget = nearbyTower;
+                    gameState.maisie.targetX = null;
+                    gameState.maisie.targetY = null;
+                }
+            }
+
             if(gameState.maisie.buildTarget) {
                 gameState.maisie.buildTarget.buildProgress += 0.01;
                 gameState.maisie.buildTarget.element.querySelector('.tower-build-fill').style.width = (gameState.maisie.buildTarget.buildProgress * 100) + '%';
@@ -1270,88 +3133,167 @@
 
         // === WAVE SYSTEM ===
         let waveTimer = null;
+        let gameStarted = false;
+
+        // Start game from the RTS panel button
+        function startGameFromPanel() {
+            if (gameStarted) return;
+            gameStarted = true;
+
+            // Hide the start button
+            const startBtn = document.getElementById('rtsStartBtn');
+            if (startBtn) startBtn.style.display = 'none';
+
+            // Switch to wave queue view
+            showWaveQueueView();
+
+            // Start the first wave
+            startWave();
+        }
+
+        // Show portrait view (when clicking on tower/interactable)
+        function showPortraitView() {
+            const portraitContent = document.getElementById('rtsPortraitContent');
+            const waveQueue = document.getElementById('rtsWaveQueue');
+            if (portraitContent) portraitContent.classList.remove('hidden');
+            if (waveQueue) waveQueue.classList.remove('active');
+        }
+
+        // Show wave queue view (after game starts, default view)
+        function showWaveQueueView() {
+            const portraitContent = document.getElementById('rtsPortraitContent');
+            const waveQueue = document.getElementById('rtsWaveQueue');
+            if (portraitContent) portraitContent.classList.add('hidden');
+            if (waveQueue) waveQueue.classList.add('active');
+            updateRtsWaveQueue();
+        }
+
+        // Update the wave queue in the portrait area
+        function updateRtsWaveQueue() {
+            const queue = document.getElementById('rtsWaveQueue');
+            if (!queue) return;
+
+            // Build with title
+            let html = '<div class="rts-wave-queue-title">Waves</div>';
+
+            // Show next 3 waves
+            for (let i = 0; i < 3; i++) {
+                const waveNum = gameState.wave + i;
+                const info = getWaveInfo(waveNum);
+                const isCurrent = i === 0;
+                const isBoss = info.boss;
+
+                html += `
+                    <div class="rts-wave-queue-item ${isCurrent ? 'current' : ''} ${isBoss ? 'boss' : ''}">
+                        <span class="rts-wave-queue-num">${waveNum}</span>
+                        <span class="rts-wave-queue-icon">${info.icon}</span>
+                        <span class="rts-wave-queue-name">${info.name}</span>
+                    </div>
+                `;
+            }
+
+            queue.innerHTML = html;
+        }
+
         function startWaveTimer(seconds = 40) {
             let countdown = seconds;
-            document.getElementById('startWaveBtn').textContent = `Next Wave (${countdown}s)`;
-            document.getElementById('startWaveBtn').disabled = true;
+            updateWaveQueueTitle(countdown);
             waveTimer = setInterval(() => {
                 countdown--;
                 if(countdown <= 0) {
                     clearInterval(waveTimer);
                     startWave();
                 } else {
-                    document.getElementById('startWaveBtn').textContent = `Next Wave (${countdown}s)`;
+                    updateWaveQueueTitle(countdown);
                 }
             }, 1000);
+        }
+
+        function updateWaveQueueTitle(countdown) {
+            const title = document.querySelector('.rts-wave-queue-title');
+            if (title) {
+                title.textContent = countdown ? `${countdown}s` : 'Waves';
+            }
         }
 
         function startWave() {
             console.log('Starting wave', gameState.wave);
             if(gameState.waveActive) {
-                // Allow multiple waves to be active at once
                 console.log('Wave already active, starting additional wave');
             }
             gameState.waveActive = true;
-            document.getElementById('startWaveBtn').textContent = 'Wave In Progress...';
-            document.getElementById('startWaveBtn').disabled = true;
-            const count = 5 + gameState.wave * 2;
-            for(let i = 0; i < count; i++) {
-                setTimeout(() => spawnEnemy(), i * 1000);
+            updateWaveQueueTitle(0); // Clear countdown, show "Waves"
+
+            // Get wave definition
+            const waveInfo = getWaveInfo(gameState.wave);
+            console.log(`Wave ${gameState.wave}: ${waveInfo.name}`);
+
+            // Spawn boss if it's a boss wave
+            if (waveInfo.boss) {
+                console.log('🔥 BOSS WAVE! 🔥');
+                setTimeout(() => spawnHazelBoss(), 2000);
+            }
+
+            // Spawn enemies based on wave definition
+            const enemies = waveInfo.enemies;
+            for(let i = 0; i < waveInfo.count; i++) {
+                const enemyType = enemies[Math.floor(Math.random() * enemies.length)];
+                setTimeout(() => spawnEnemy(enemyType), i * waveInfo.spawnDelay);
             }
 
             // Increment wave for next time
             gameState.wave++;
             updateStats();
+            updateRtsWaveQueue(); // Update wave queue in portrait area
 
-            // Auto-start next wave after 40 seconds
+            // Auto-start next wave after 40 seconds (longer for boss wave)
             if(waveTimer) clearInterval(waveTimer);
-            startWaveTimer(40);
+            startWaveTimer(waveInfo.boss ? 60 : 40);
         }
 
-        function spawnEnemy() {
-        console.log('Spawning enemy for wave', gameState.wave);
-            const hp = (30 + gameState.wave * 10) * gameState.devMultiplier;
-            const isBoss = Math.random() < 0.1;
-            const isLieutenant = !isBoss && Math.random() < 0.15;
+        // Enemy type definitions
+        const enemyTypes = {
+            loki:   { hp: 15, speed: 1.2, icon: '🐱', class: 'loki' },
+            ghost:  { hp: 1, speed: 1.0, icon: '👻', class: '' },
+            spider: { hp: 1.2, speed: 1.3, icon: '🕷️', class: 'spider' },
+            bat:    { hp: 0.8, speed: 1.4, icon: '🦇', class: 'bat', flying: true },
+            golem:  { hp: 4, speed: 0.3, icon: '🗿', class: 'golem' },
+            pumpkin:{ hp: 1.5, speed: 0.6, icon: '🎃', class: 'pumpkin' }
+        };
 
-            // Spiders only spawn at night!
-            const isNightTime = gameState.dayNightCycle.phase === 'night';
-            const isSpider = !isBoss && !isLieutenant && isNightTime && Math.random() < 0.35; // 35% chance at night
+        function spawnEnemy(type = 'ghost') {
+            const baseHp = (30 + gameState.wave * 10) * gameState.devMultiplier;
+            const typeInfo = enemyTypes[type] || enemyTypes.ghost;
 
-            // Bats also spawn at night! (after wave 2)
-            const isBat = !isBoss && !isLieutenant && !isSpider && isNightTime && gameState.wave >= 2 && Math.random() < 0.25; // 25% chance at night
-
-            // Golems spawn during day (opposite of spiders) after wave 3
-            const isDayTime = gameState.dayNightCycle.phase === 'day';
-            const isGolem = !isBoss && !isLieutenant && !isSpider && !isBat && isDayTime && gameState.wave >= 3 && Math.random() < 0.2; // 20% chance during day
-
-            const isPumpkin = !isBoss && !isLieutenant && !isSpider && !isBat && !isGolem && Math.random() < 0.25; // 25% chance for pumpkin!
+            // Loki has fixed HP, others scale with wave
+            const hp = type === 'loki' ? typeInfo.hp * gameState.devMultiplier : baseHp * typeInfo.hp;
 
             const enemy = {
-                x: 400, y: 140,
-                health: isBoss ? hp * 5 : isLieutenant ? hp * 2 : isPumpkin ? hp * 1.5 : isSpider ? hp * 1.2 : isBat ? hp * 0.8 : isGolem ? hp * 4 : hp,
-                maxHealth: isBoss ? hp * 5 : isLieutenant ? hp * 2 : isPumpkin ? hp * 1.5 : isSpider ? hp * 1.2 : isBat ? hp * 0.8 : isGolem ? hp * 4 : hp,
-                speed: isBoss ? 0.5 : isLieutenant ? 0.8 : isPumpkin ? 0.6 : isSpider ? 1.3 : isBat ? 1.4 : isGolem ? 0.3 : 1,
+                x: 380, y: 140,
+                health: hp,
+                maxHealth: hp,
+                speed: typeInfo.speed,
                 path: [], pathIndex: 0,
-                phase: 'movingToMarker', // First phase: walk straight to marker
-                isPumpkin: isPumpkin,
-                isSpider: isSpider,
-                isBat: isBat,
-                isFlying: isBat, // Bats are flying units!
-                isGolem: isGolem,
+                phase: 'movingToMarker',
+                type: type,
+                isLoki: type === 'loki',
+                isPumpkin: type === 'pumpkin',
+                isSpider: type === 'spider',
+                isBat: type === 'bat',
+                isFlying: type === 'bat',
+                isGolem: type === 'golem',
                 laserCooldown: 0,
                 webCooldown: 0,
-                smashCooldown: 0
+                smashCooldown: 0,
+                waddlePhase: Math.random() * Math.PI * 2,
+                waddleSpeed: 8 + Math.random() * 4
             };
+
             const el = document.createElement('div');
             el.className = 'enemy';
-            if(isBoss) el.classList.add('boss');
-            if(isLieutenant) el.classList.add('lieutenant');
-            if(isPumpkin) el.classList.add('pumpkin');
-            if(isSpider) el.classList.add('spider');
-            if(isBat) el.classList.add('bat');
-            if(isGolem) el.classList.add('golem');
-            el.textContent = isBoss ? '👹' : isLieutenant ? '😈' : isPumpkin ? '🎃' : isSpider ? '🕷️' : isBat ? '🦇' : isGolem ? '🗿' : '👻';
+            if (typeInfo.class) el.classList.add(typeInfo.class);
+            if (typeInfo.icon) el.textContent = typeInfo.icon;
+
             el.style.left = enemy.x + 'px';
             el.style.top = enemy.y + 'px';
             el.innerHTML += '<div class="enemy-health-bar"><div class="enemy-health-fill"></div></div>';
@@ -1359,7 +3301,192 @@
             canvas.appendChild(el);
             enemy.element = el;
             gameState.enemies.push(enemy);
-            // Don't calculate path yet - enemies walk straight to marker first
+            updateEnemyPathToMarker(enemy);
+        }
+
+        function spawnHazelBoss() {
+            console.log('⚡ SPAWNING HAZEL BOSS! ⚡');
+            const baseHp = 1000 * gameState.devMultiplier; // Very high HP
+
+            const enemy = {
+                x: 332, y: 80, // Start position adjusted for larger sprite
+                health: baseHp,
+                maxHealth: baseHp,
+                speed: 0.4, // Slow but menacing
+                path: [], pathIndex: 0,
+                phase: 'movingToMarker',
+                isHazelBoss: true,
+                lightningCooldown: 0,
+                castleDamage: 40, // Special damage to castle
+                waddlePhase: 0,
+                waddleSpeed: 3
+            };
+
+            const el = document.createElement('div');
+            el.className = 'enemy hazel-boss';
+            el.style.left = enemy.x + 'px';
+            el.style.top = enemy.y + 'px';
+            el.innerHTML = '<div class="enemy-health-bar"><div class="enemy-health-fill"></div></div>';
+            el.onclick = () => showEnemyInfo(enemy);
+            canvas.appendChild(el);
+            enemy.element = el;
+            gameState.enemies.push(enemy);
+            updateEnemyPathToMarker(enemy);
+        }
+
+        function spawnRedLightning(targetTower) {
+            // Create lightning bolt from sky to tower
+            const lightning = document.createElement('div');
+            lightning.className = 'red-lightning';
+            const towerCenterX = targetTower.x + 40;
+            const towerCenterY = targetTower.y + 40;
+            lightning.style.left = (towerCenterX - 2) + 'px';
+            lightning.style.top = '0px';
+            lightning.style.height = towerCenterY + 'px';
+            canvas.appendChild(lightning);
+
+            // Create impact effect at tower
+            const impact = document.createElement('div');
+            impact.className = 'lightning-impact';
+            impact.style.left = (towerCenterX - 30) + 'px';
+            impact.style.top = (towerCenterY - 30) + 'px';
+            canvas.appendChild(impact);
+
+            // Deal damage to tower
+            targetTower.health -= 20;
+            const healthBar = targetTower.element.querySelector('.tower-health-bar');
+            healthBar.style.display = 'block';
+            const pct = (targetTower.health / targetTower.maxHealth) * 100;
+            targetTower.element.querySelector('.tower-health-fill').style.width = pct + '%';
+
+            // Check if tower is destroyed
+            if (targetTower.health <= 0) {
+                targetTower.element.remove();
+                gameState.towers = gameState.towers.filter(t => t !== targetTower);
+                updatePathMap();
+            }
+
+            // Remove effects after animation
+            setTimeout(() => lightning.remove(), 300);
+            setTimeout(() => impact.remove(), 400);
+        }
+
+        // Marker zone center position (dark green square)
+        // Adjusted for enemy element positioning (left edge, not center)
+        const MARKER_CENTER_X = 380; // Visual center minus half enemy width
+        const MARKER_CENTER_Y = 600; // Visual center minus half enemy height
+
+        function updateEnemyPathToMarker(enemy) {
+            // Simple path to marker - go directly there
+            // The marker center is at (400, 620)
+            enemy.markerPath = [{x: MARKER_CENTER_X, y: MARKER_CENTER_Y}];
+            enemy.markerPathIndex = 0;
+
+            // Check if direct path is blocked by towers - if so, find path around
+            const directPathBlocked = gameState.towers.some(t => {
+                // Check if tower blocks the path from enemy to marker
+                const towerLeft = t.x;
+                const towerRight = t.x + 80;
+                const towerTop = t.y;
+                const towerBottom = t.y + 80;
+
+                // Simple check: if tower is between enemy and marker horizontally
+                // and vertically overlaps the path
+                const pathMinX = Math.min(enemy.x, MARKER_CENTER_X) - 20;
+                const pathMaxX = Math.max(enemy.x, MARKER_CENTER_X) + 20;
+                const pathMinY = Math.min(enemy.y, MARKER_CENTER_Y);
+                const pathMaxY = Math.max(enemy.y, MARKER_CENTER_Y);
+
+                return towerRight > pathMinX && towerLeft < pathMaxX &&
+                       towerBottom > pathMinY && towerTop < pathMaxY;
+            });
+
+            if(directPathBlocked) {
+                // Use BFS to find path around towers
+                const startCol = Math.floor((enemy.x - 40) / HALF_CELL);
+                const startRow = Math.floor((enemy.y - 100) / HALF_CELL);
+                const targetCol = Math.floor((MARKER_CENTER_X - 40) / HALF_CELL); // Column 9
+                const targetRow = Math.floor((MARKER_CENTER_Y - 100) / HALF_CELL); // Row 13
+
+                const queue = [{c: startCol, r: startRow, path: []}];
+                const visited = new Set();
+
+                while(queue.length > 0) {
+                    const {c, r, path} = queue.shift();
+                    const key = `${c},${r}`;
+
+                    if(visited.has(key)) continue;
+                    visited.add(key);
+
+                    // Check if reached target area
+                    if(r >= targetRow && Math.abs(c - targetCol) <= 1) {
+                        const finalPath = path.concat([{x: MARKER_CENTER_X, y: MARKER_CENTER_Y}]);
+                        // Smooth the path - keep only waypoints where direction changes
+                        enemy.markerPath = smoothPathSimple(finalPath);
+                        enemy.markerPathIndex = 0;
+                        return;
+                    }
+
+                    // Check if cell is blocked by tower
+                    if(gameState.pathMap[c] && gameState.pathMap[c][r] === 9999) continue;
+
+                    // Helper to check if cell is blocked
+                    const isBlocked = (col, row) => {
+                        if(col < 0 || col >= HALF_COLS || row < 0 || row >= HALF_ROWS) return true;
+                        return gameState.pathMap[col] && gameState.pathMap[col][row] === 9999;
+                    };
+
+                    // Add neighbors (prioritize going toward target)
+                    // For diagonal moves, check that adjacent cells aren't blocking the corner
+                    const neighbors = [
+                        {nc: c, nr: r+1, diagonal: false},     // Down
+                        {nc: c-1, nr: r, diagonal: false},     // Left
+                        {nc: c+1, nr: r, diagonal: false},     // Right
+                    ];
+
+                    // Only allow diagonal if both adjacent cells are clear (no corner cutting)
+                    if(!isBlocked(c-1, r) && !isBlocked(c, r+1)) {
+                        neighbors.push({nc: c-1, nr: r+1, diagonal: true}); // Down-left
+                    }
+                    if(!isBlocked(c+1, r) && !isBlocked(c, r+1)) {
+                        neighbors.push({nc: c+1, nr: r+1, diagonal: true}); // Down-right
+                    }
+
+                    neighbors.forEach(({nc, nr}) => {
+                        if(nc >= 0 && nc < HALF_COLS && nr >= 0 && nr < HALF_ROWS && !visited.has(`${nc},${nr}`)) {
+                            if(!isBlocked(nc, nr)) {
+                                queue.push({
+                                    c: nc,
+                                    r: nr,
+                                    path: path.concat([{x: nc * HALF_CELL + 40 + HALF_CELL/2, y: nr * HALF_CELL + 100 + HALF_CELL/2}])
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        // Simple path smoothing - remove intermediate points on straight lines
+        function smoothPathSimple(path) {
+            if(path.length <= 2) return path;
+            const result = [path[0]];
+            for(let i = 1; i < path.length - 1; i++) {
+                const prev = result[result.length - 1];
+                const curr = path[i];
+                const next = path[i + 1];
+                // Check if direction changes
+                const dx1 = curr.x - prev.x;
+                const dy1 = curr.y - prev.y;
+                const dx2 = next.x - curr.x;
+                const dy2 = next.y - curr.y;
+                // Keep point if direction changes significantly
+                if(Math.abs(dx1 * dy2 - dy1 * dx2) > 0.1) {
+                    result.push(curr);
+                }
+            }
+            result.push(path[path.length - 1]);
+            return result;
         }
 
         function updateEnemyPath(enemy) {
@@ -1391,12 +3518,26 @@
                 }
                 visited.add(key);
 
-                // Include diagonals for shortcuts
-                const neighbors = [
-                    [c-1,r], [c+1,r], [c,r-1], [c,r+1],  // Cardinal directions
-                    [c-1,r-1], [c-1,r+1], [c+1,r-1], [c+1,r+1]  // Diagonals
-                ].filter(([nc,nr]) =>
-                    nc>=0 && nc<HALF_COLS && nr>=0 && nr<HALF_ROWS &&
+                // Helper to check if cell is blocked
+                const isBlocked = (col, row) => {
+                    if(col < 0 || col >= HALF_COLS || row < 0 || row >= HALF_ROWS) return true;
+                    return gameState.pathMap[col][row] === 9999;
+                };
+
+                // Cardinal directions (always allowed if not blocked)
+                const cardinalNeighbors = [
+                    [c-1, r], [c+1, r], [c, r-1], [c, r+1]
+                ];
+
+                // Diagonal directions (only allowed if adjacent cells are clear - no corner cutting)
+                const diagonalNeighbors = [];
+                if(!isBlocked(c-1, r) && !isBlocked(c, r-1)) diagonalNeighbors.push([c-1, r-1]); // Up-left
+                if(!isBlocked(c+1, r) && !isBlocked(c, r-1)) diagonalNeighbors.push([c+1, r-1]); // Up-right
+                if(!isBlocked(c-1, r) && !isBlocked(c, r+1)) diagonalNeighbors.push([c-1, r+1]); // Down-left
+                if(!isBlocked(c+1, r) && !isBlocked(c, r+1)) diagonalNeighbors.push([c+1, r+1]); // Down-right
+
+                const neighbors = [...cardinalNeighbors, ...diagonalNeighbors].filter(([nc, nr]) =>
+                    nc >= 0 && nc < HALF_COLS && nr >= 0 && nr < HALF_ROWS &&
                     gameState.pathMap[nc][nr] !== 9999 &&
                     !visited.has(`${nc},${nr}`)
                 );
@@ -1457,6 +3598,15 @@
 
         function updateEnemies() {
             gameState.enemies.forEach(enemy => {
+                // LOKI WADDLE ANIMATION (procedural)
+                if(enemy.isLoki && !enemy.reachedCastle) {
+                    enemy.waddlePhase += enemy.waddleSpeed * (1/60);
+                    const waddleAngle = Math.sin(enemy.waddlePhase) * 15; // Rotate +/- 15 degrees
+                    const waddleBob = Math.abs(Math.sin(enemy.waddlePhase * 2)) * 3; // Slight vertical bob
+                    const waddleSquish = 1 + Math.sin(enemy.waddlePhase * 2) * 0.1; // Slight squish
+                    enemy.element.style.transform = `rotate(${waddleAngle}deg) translateY(${-waddleBob}px) scaleX(${waddleSquish}) scaleY(${2 - waddleSquish})`;
+                }
+
                 // PUMPKIN LASER SHOOTING LOGIC
                 if(enemy.isPumpkin && !enemy.reachedCastle) {
                     enemy.laserCooldown -= 1/60;
@@ -1518,11 +3668,43 @@
                     }
                 }
 
-                // PHASE 1: Moving straight to marker
+                // Hazel Boss - Red Lightning Attack!
+                if(enemy.isHazelBoss && !enemy.reachedCastle) {
+                    enemy.lightningCooldown -= 1/60;
+                    if(enemy.lightningCooldown <= 0) {
+                        // Find random built tower to strike
+                        const builtTowers = gameState.towers.filter(t => t.built);
+                        if(builtTowers.length > 0) {
+                            const targetTower = builtTowers[Math.floor(Math.random() * builtTowers.length)];
+                            spawnRedLightning(targetTower);
+                            enemy.lightningCooldown = 3.0; // 3 second cooldown between strikes
+                        }
+                    }
+
+                    // Check if boss is over any towers (for translucency effect)
+                    const bossCenter = { x: enemy.x + 68, y: enemy.y + 68 };
+                    const isOverTower = gameState.towers.some(t => {
+                        const towerCenter = { x: t.x + 40, y: t.y + 40 };
+                        const dx = bossCenter.x - towerCenter.x;
+                        const dy = bossCenter.y - towerCenter.y;
+                        return Math.sqrt(dx*dx + dy*dy) < 100;
+                    });
+                    enemy.element.classList.toggle('over-tower', isOverTower);
+                }
+
+                // PHASE 1: Moving to marker (pathfinding around towers)
                 if(enemy.phase === 'movingToMarker') {
-                    const targetY = 620; // Target marker Y position
-                    if(enemy.y < targetY) {
-                        enemy.y += enemy.speed;
+                    if(enemy.markerPath && enemy.markerPathIndex < enemy.markerPath.length) {
+                        const target = enemy.markerPath[enemy.markerPathIndex];
+                        const dx = target.x - enemy.x;
+                        const dy = target.y - enemy.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if(dist < 3) {
+                            enemy.markerPathIndex++;
+                        } else {
+                            enemy.x += (dx / dist) * enemy.speed;
+                            enemy.y += (dy / dist) * enemy.speed;
+                        }
                         enemy.element.style.left = enemy.x + 'px';
                         enemy.element.style.top = enemy.y + 'px';
                     } else {
@@ -1550,14 +3732,17 @@
                         // Reached castle - deal damage
                         enemy.reachedCastle = true;
                         enemy.element.classList.add('entering');
-                        gameState.health -= 10;
-                        updateStats();
+                        if(!gameState.godMode) {
+                            const damage = enemy.castleDamage || 10; // Hazel boss deals 40!
+                            gameState.health -= damage;
+                            updateStats();
+                        }
                         setTimeout(() => {
                             enemy.element.remove();
                             gameState.enemies = gameState.enemies.filter(e => e !== enemy);
                             checkWaveEnd();
                         }, 200);
-                        if(gameState.health <= 0) alert('Game Over!');
+                        if(gameState.health <= 0 && !gameState.godMode) showGameOver("The enemies have overrun the castle!");
                     }
                 }
             });
@@ -1638,9 +3823,11 @@
             gameState.lasers.push(laser);
 
             // Damage Maisie (reduce player health)
-            gameState.health -= laser.damage;
-            updateStats();
-            if(gameState.health <= 0) alert('Game Over! The pumpkins won!');
+            if(!gameState.godMode) {
+                gameState.health -= laser.damage;
+                updateStats();
+                if(gameState.health <= 0) showGameOver("The pumpkins have won!");
+            }
         }
 
         function updateLasers() {
@@ -1702,9 +3889,9 @@
         }
 
         // === HEALING TOWER MECHANICS ===
-        function healTower(healTower, targetTower) {
+        function healTower(healTower, targetTower, effectiveness = 1.0) {
             const type = towerTypes[healTower.type];
-            const healAmount = type.healAmount * healTower.level;
+            const healAmount = type.healAmount * healTower.level * effectiveness;
 
             // Heal target tower
             targetTower.health = Math.min(targetTower.maxHealth, targetTower.health + healAmount);
@@ -1759,23 +3946,118 @@
         function updateTowers() {
             gameState.towers.forEach(tower => {
                 if(!tower.built) return;
+                const type = towerTypes[tower.type];
+                const range = type.range + (tower.level * 10);
+
+                // Kona tower suck/vacuum effect (CONTINUOUS - runs every frame!)
+                if(type.hasSuck) {
+                    const suckRange = range * 0.9;
+                    const now = Date.now();
+                    const nearbyEnemies = gameState.enemies
+                        .filter(e => {
+                            if(e.isFlying) return false;
+                            // Check if enemy is immune to suck
+                            if(e.suckImmuneUntil && now < e.suckImmuneUntil) return false;
+                            const dx = e.x - (tower.x + 40);
+                            const dy = e.y - (tower.y + 40);
+                            return Math.sqrt(dx*dx + dy*dy) < suckRange;
+                        })
+                        .map(e => {
+                            const dx = e.x - (tower.x + 40);
+                            const dy = e.y - (tower.y + 40);
+                            return { enemy: e, dist: Math.sqrt(dx*dx + dy*dy) };
+                        })
+                        .sort((a, b) => a.dist - b.dist)
+                        .slice(0, type.suckCount || 3);
+
+                    // Create vacuum visual effects
+                    if(nearbyEnemies.length > 0) {
+                        // Spawn wind/leaf particles towards tower
+                        if(Math.random() < 0.4) {
+                            nearbyEnemies.forEach(({ enemy }) => {
+                                spawnVacuumParticle(enemy.x + 20, enemy.y + 20, tower.x + 40, tower.y + 40);
+                            });
+                        }
+                    }
+
+                    nearbyEnemies.forEach(({ enemy, dist }) => {
+                        const dx = (tower.x + 40) - enemy.x;
+                        const dy = (tower.y + 40) - enemy.y;
+                        const strength = type.suckStrength || 1.38;
+                        const minDist = type.suckMinDist || 50;
+
+                        // Track suck duration - start timer if not already being sucked
+                        if(!enemy.suckStartTime) {
+                            enemy.suckStartTime = now;
+                        }
+
+                        // Check if sucked for 5 seconds - become immune for 10 seconds
+                        const suckDuration = now - enemy.suckStartTime;
+                        if(suckDuration >= 5000) {
+                            enemy.suckImmuneUntil = now + 10000; // Immune for 10 seconds
+                            enemy.suckStartTime = null;
+                            // Visual feedback - enemy breaks free!
+                            if(enemy.element) {
+                                enemy.element.style.transform = 'scale(1.2)';
+                                setTimeout(() => {
+                                    if(enemy.element) enemy.element.style.transform = '';
+                                }, 200);
+                            }
+                            return;
+                        }
+
+                        // Don't pull enemies closer than minimum distance - they struggle at the edge
+                        if(dist <= minDist) {
+                            // Enemy is fighting against the pull! Add wobble but don't pull closer
+                            if(enemy.element) {
+                                const wobble = (Math.random() - 0.5) * 6;
+                                enemy.element.style.transform = `rotate(${wobble}deg)`;
+                            }
+                            return;
+                        }
+
+                        // Weaker pull - enemies can fight against it
+                        // Pull force decreases as they get closer to min distance
+                        const distFromMin = dist - minDist;
+                        const effectiveRange = suckRange - minDist;
+                        const pullForce = strength * (distFromMin / effectiveRange) * 0.7;
+
+                        enemy.x += (dx / dist) * pullForce;
+                        enemy.y += (dy / dist) * pullForce;
+
+                        // Add wobble effect to enemy being sucked (struggling)
+                        if(enemy.element) {
+                            const wobble = (Math.random() - 0.5) * 4;
+                            enemy.element.style.transform = `rotate(${wobble}deg)`;
+                        }
+
+                        // Mark as being actively sucked this frame
+                        enemy.lastSuckedTime = now;
+                    });
+
+                    // Reset suck timer for enemies that left range (not sucked for 500ms)
+                    gameState.enemies.forEach(e => {
+                        if(e.suckStartTime && (!e.lastSuckedTime || now - e.lastSuckedTime > 500)) {
+                            e.suckStartTime = null;
+                        }
+                    });
+                }
+
                 tower.cooldown -= 1/60;
                 if(tower.cooldown <= 0) {
-                    const type = towerTypes[tower.type];
-                    const range = type.range + (tower.level * 10);
-
                     // Healing tower logic
                     if(type.isHeal) {
                         const damagedTowers = gameState.towers.filter(t => {
-                            if(!t.built || t === tower || t.health >= t.maxHealth) return false;
+                            if(!t.built || t.health >= t.maxHealth) return false;
                             const dx = t.x + 40 - (tower.x + 40);
                             const dy = t.y + 40 - (tower.y + 40);
                             return Math.sqrt(dx*dx + dy*dy) < range;
                         });
                         if(damagedTowers.length > 0) {
-                            // Heal all nearby damaged towers
+                            // Heal all nearby damaged towers (self-heal at 10% effectiveness)
                             damagedTowers.forEach(t => {
-                                healTower(tower, t);
+                                const isSelf = t === tower;
+                                healTower(tower, t, isSelf ? 0.1 : 1.0);
                             });
                             tower.cooldown = type.cooldown;
                         }
@@ -1829,6 +4111,36 @@
             });
         }
 
+        // Luigi's Mansion style vacuum particle effect
+        function spawnVacuumParticle(fromX, fromY, toX, toY) {
+            const particles = ['🍃', '🌀', '💨', '✨', '🌿'];
+            const particle = document.createElement('div');
+            particle.className = 'vacuum-particle';
+            particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+
+            // Start position with some randomness
+            const startX = fromX + (Math.random() - 0.5) * 40;
+            const startY = fromY + (Math.random() - 0.5) * 40;
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+
+            // Calculate spiral path to tower
+            const dx = toX - startX;
+            const dy = toY - startY;
+            const angle = Math.atan2(dy, dx);
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            // Set CSS variables for animation
+            particle.style.setProperty('--end-x', dx + 'px');
+            particle.style.setProperty('--end-y', dy + 'px');
+            particle.style.setProperty('--spiral-offset', (Math.random() - 0.5) * 60 + 'px');
+
+            canvas.appendChild(particle);
+
+            // Remove after animation
+            setTimeout(() => particle.remove(), 500);
+        }
+
         function shootProjectile(tower, target) {
             const type = towerTypes[tower.type];
             const proj = {
@@ -1874,13 +4186,17 @@
             enemy.element.querySelector('.enemy-health-fill').style.width = pct + '%';
             if(enemy.health <= 0) {
                 enemy.element.classList.add('dying');
-                gameState.coins += 10;
+                // Loki enemies are worth 1 gold, others worth 10
+                const goldReward = enemy.isLoki ? 1 : 10;
+                gameState.coins += goldReward;
+                gameState.totalKills++;
+                gameState.totalGold += goldReward;
                 updateStats();
 
                 // Show gold popup
                 const goldPopup = document.createElement('div');
                 goldPopup.className = 'gold-popup';
-                goldPopup.textContent = '+10g';
+                goldPopup.textContent = `+${goldReward}g`;
                 goldPopup.style.left = enemy.x + 'px';
                 goldPopup.style.top = enemy.y + 'px';
                 canvas.appendChild(goldPopup);
@@ -1911,49 +4227,32 @@
                 }
             });
             updateStats();
+            // Achievement: Complete wave 10 (wave is now 11 after incrementing)
+            if (gameState.wave === 11 && !gameState.achievements.wave10) {
+                gameState.achievements.wave10 = true;
+                showAchievement('Sparkle Burst', 'Completed wave 10!', 'sparkle');
+            }
             // No longer need to call startWaveTimer() - waves auto-start every 40 seconds
         }
 
         // === TOWER INFO ===
         function showTowerInfo(t) {
-            closeInfoPanel();
+            // Clear previous selection without switching views
+            document.getElementById('infoPanel').classList.remove('active');
+            rangeCircle.style.display = 'none';
+            if(gameState.selectedTower) gameState.selectedTower.element.classList.remove('selected');
+
             gameState.selectedTower = t;
             t.element.classList.add('selected');
             const type = towerTypes[t.type];
-            const p = document.getElementById('infoPanel');
-            const r = t.element.getBoundingClientRect();
-            p.style.left = (r.right + 10) + 'px';
-            p.style.top = r.top + 'px';
-            p.classList.add('active');
-            let displayName = type.name;
-            if (type.evolveLevel && t.level >= type.evolveLevel) {
-                displayName = type.evolveName;
-            }
-            const status = t.built ? "Active" : "Under Construction";
-            document.getElementById('infoTitle').textContent = `${type.icon || '🗼'} ${displayName}`;
-            let statsHTML = `
-                <div class="info-row"><span>Status:</span><b>${status}</b></div>
-                <div class="info-row"><span>Lvl:</span><b>${t.level}</b></div>
-            `;
-            if (type.isVacuum) {
-                statsHTML += `<div class="info-row"><span>Ability:</span><b>Vacuum (2s)</b></div>`;
-            } else if (type.isHeal) {
-                statsHTML += `<div class="info-row"><span>Ability:</span><b>Healing</b></div>`;
-                statsHTML += `<div class="info-row"><span>Heal:</span><b>${type.healAmount * t.level} HP</b></div>`;
-            } else if (type.canHitFlying && !type.canHitGround) {
-                statsHTML += `<div class="info-row"><span>Dmg:</span><b>${type.damage * t.level}</b></div>`;
-                statsHTML += `<div class="info-row"><span>Target:</span><b>Air Only</b></div>`;
-            } else {
-                statsHTML += `<div class="info-row"><span>Dmg:</span><b>${type.damage * t.level}</b></div>`;
-            }
-            document.getElementById('infoContent').innerHTML = statsHTML;
-            const upCost = Math.floor(type.cost * 0.8 * t.level);
-            const sellAmt = Math.floor(type.cost * 0.5 * t.level);
-            document.getElementById('infoActions').innerHTML = `
-                <button class="info-btn" style="background:#ff6b6b; color:white" onclick="sellTower(${sellAmt})">Sell ${sellAmt}</button>
-                <button class="info-btn" style="background:#ffd93d; color:#333" onclick="upgradeTower(${upCost})">Up ${upCost}</button>
-                <button class="info-btn" style="background:#a8e6cf; color:#333" onclick="closeInfoPanel()">X</button>
-            `;
+
+            // Switch back to portrait view when selecting a tower
+            showPortraitView();
+
+            // Update the RTS panel to show selected tower info
+            updateRtsPanel('selected', t);
+
+            // Show range circle
             rangeCircle.style.display = 'block';
             const range = type.range + (t.level * 10);
             rangeCircle.style.width = (range*2) + 'px';
@@ -1998,7 +4297,9 @@
 
             // Determine enemy name
             let name = 'Ghost Minion';
-            if(e.element.classList.contains('boss')) name = 'DEMON BOSS 👹';
+            if(e.isLoki) name = 'LOKI 🐕';
+            if(e.isHazelBoss) name = '⚡ HAZEL BOSS ⚡';
+            else if(e.element.classList.contains('boss')) name = 'DEMON BOSS 👹';
             if(e.element.classList.contains('lieutenant')) name = 'DEVIL LIEUTENANT 😈';
             if(e.element.classList.contains('pumpkin')) name = 'EVIL PUMPKIN 🎃';
             if(e.element.classList.contains('spider')) name = 'NIGHT SPIDER 🕷️';
@@ -2015,6 +4316,14 @@
                 infoHTML += `<div class="info-row"><span>Type:</span><b>BOSS</b></div>`;
                 infoHTML += `<div class="info-row"><span>HP:</span><b>5x Normal</b></div>`;
                 infoHTML += `<div class="info-row"><span>Speed:</span><b>Slow</b></div>`;
+            }
+
+            // Hazel Boss abilities
+            if(e.isHazelBoss) {
+                infoHTML += `<div class="info-row"><span>Type:</span><b style="color:#ff0044">⚡ WAVE 10 BOSS ⚡</b></div>`;
+                infoHTML += `<div class="info-row"><span>Ability:</span><b style="color:#ff4466">RED LIGHTNING</b></div>`;
+                infoHTML += `<div class="info-row"><span>Effect:</span><b>Strikes random towers!</b></div>`;
+                infoHTML += `<div class="info-row"><span>Castle Dmg:</span><b style="color:#ff0044">40 HP!</b></div>`;
             }
 
             // Lieutenant abilities
@@ -2045,6 +4354,13 @@
                 infoHTML += `<div class="info-row"><span>Speed:</span><b>VERY FAST!</b></div>`;
             }
 
+            // Loki abilities
+            if(e.isLoki) {
+                infoHTML += `<div class="info-row"><span>Type:</span><b>Tiny Critter</b></div>`;
+                infoHTML += `<div class="info-row"><span>Reward:</span><b>1 Gold</b></div>`;
+                infoHTML += `<div class="info-row"><span>Speed:</span><b>Fast</b></div>`;
+            }
+
             // Golem abilities
             if(e.isGolem) {
                 infoHTML += `<div class="info-row"><span>Ability:</span><b>TOWER SMASH 💥</b></div>`;
@@ -2070,7 +4386,26 @@
             if(gameState.selectedTower) gameState.selectedTower.element.classList.remove('selected');
             gameState.selectedTower = null;
             gameState.selectedEnemy = null;
+            // Reset RTS panel to build mode
+            updateRtsPanel('build');
+            // Switch back to wave queue view if game has started
+            if (gameStarted) {
+                showWaveQueueView();
+            }
         }
+
+        // Close info panel when clicking outside of it
+        document.addEventListener('click', e => {
+            const infoPanel = document.getElementById('infoPanel');
+            const panelActive = infoPanel.classList.contains('active') || gameState.selectedTower;
+            if (panelActive &&
+                !e.target.closest('.info-panel') &&
+                !e.target.closest('.rts-panel') &&
+                !e.target.closest('.tower') &&
+                !e.target.closest('.enemy')) {
+                closeInfoPanel();
+            }
+        });
 
         // === UTILS ===
         function drawDebugGrid() {
@@ -2099,8 +4434,28 @@
             document.getElementById('introModal').classList.remove('active');
         }
 
+        function showGameOver(message = "The castle has fallen...") {
+            document.getElementById('gameOverMessage').textContent = message;
+            document.getElementById('finalWave').textContent = gameState.wave;
+            document.getElementById('finalKills').textContent = gameState.totalKills;
+            document.getElementById('finalGold').textContent = gameState.totalGold;
+            document.getElementById('gameOverModal').classList.add('active');
+        }
+
         function resetGame() {
             location.reload();
+        }
+
+        function togglePause() {
+            gameState.paused = !gameState.paused;
+            document.getElementById('pauseOverlay').classList.toggle('active', gameState.paused);
+            document.getElementById('pauseBtn').textContent = gameState.paused ? '▶️' : '⏸️';
+        }
+
+        function toggleMenu() {
+            const menuOpen = document.getElementById('gameMenuOverlay').classList.toggle('active');
+            // Pause when menu opens, unpause when it closes
+            gameState.paused = menuOpen;
         }
 
         function toggleDevPanel() {
@@ -2124,134 +4479,96 @@
             drawDebugGrid();
         }
 
-        // === DAY/NIGHT CYCLE ===
-        function generateStars() {
-            const starsContainer = document.getElementById('stars');
-            for(let i = 0; i < 50; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 50 + '%';
-                star.style.animationDelay = Math.random() * 3 + 's';
-                starsContainer.appendChild(star);
+        function toggleGodMode() {
+            gameState.godMode = document.getElementById('devGodMode').checked;
+        }
+
+        function setGameSpeed(speed) {
+            gameState.gameSpeed = speed;
+        }
+
+        function devSkipToWave() {
+            const targetWave = parseInt(document.getElementById('devSkipWave').value) || 1;
+            gameState.wave = Math.max(1, targetWave);
+            updateStats();
+        }
+
+        function devSpawnEnemy(type) {
+            // Use unified spawn system for regular enemy types
+            if (['loki', 'ghost', 'spider', 'bat', 'golem', 'pumpkin'].includes(type)) {
+                spawnEnemy(type === 'normal' ? 'ghost' : type);
+                return;
             }
-        }
-
-        // Helper function for linear interpolation
-        function lerp(a, b, t) {
-            return a + (b - a) * t;
-        }
-
-        // Helper to parse RGB from hex
-        function hexToRgb(hex) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : null;
-        }
-
-        // Helper to interpolate colors
-        function lerpColor(color1, color2, t) {
-            const c1 = hexToRgb(color1);
-            const c2 = hexToRgb(color2);
-            const r = Math.round(lerp(c1.r, c2.r, t));
-            const g = Math.round(lerp(c1.g, c2.g, t));
-            const b = Math.round(lerp(c1.b, c2.b, t));
-            return `rgb(${r}, ${g}, ${b})`;
-        }
-
-        function updateDayNightCycle() {
-            const cycle = gameState.dayNightCycle;
-            cycle.time += 1/60; // Add 1 frame
-
-            if(cycle.time >= cycle.period) {
-                cycle.time = 0;
+            // Special handling for boss (use Hazel boss)
+            if (type === 'boss') {
+                spawnHazelBoss();
+                return;
             }
+            // Fallback to ghost
+            spawnEnemy('ghost');
+        }
 
-            // Normalize time to 0-1 range
-            const progress = cycle.time / cycle.period;
+        function devKillAllEnemies() {
+            gameState.enemies.forEach(enemy => {
+                if(enemy.element) enemy.element.remove();
+            });
+            gameState.enemies = [];
+        }
 
-            const overlay = document.getElementById('dayNightOverlay');
-            const sun = document.getElementById('sun');
-            const moon = document.getElementById('moon');
-            const stars = document.getElementById('stars');
-            const canvas = document.getElementById('gameCanvas');
+        function devHealAllTowers() {
+            gameState.towers.forEach(tower => {
+                tower.health = tower.maxHealth;
+                if(tower.element) {
+                    tower.element.querySelector('.tower-health-fill').style.width = '100%';
+                    tower.element.querySelector('.tower-health-bar').style.display = 'none';
+                }
+            });
+        }
 
-            // Define color stops
-            const dayBgStart = '#4a6741';
-            const dayBgEnd = '#2d4a2b';
-            const nightBgStart = '#2a3a4a';
-            const nightBgEnd = '#1a2a3a';
-
-            const dayCanvasBg = '#2d5016';
-            const nightCanvasBg = '#1f3512';
-
-            // Calculate cycle position (0 = noon, 0.5 = midnight)
-            // Day: 0-0.4, Sunset: 0.4-0.5, Night: 0.5-0.9, Sunrise: 0.9-1.0
-            let dayNightBlend = 0;
-
-            if(progress < 0.4) {
-                // Full day
-                dayNightBlend = 0;
-            } else if(progress < 0.5) {
-                // Sunset transition (0.4 to 0.5)
-                dayNightBlend = (progress - 0.4) / 0.1; // 0 to 1
-            } else if(progress < 0.9) {
-                // Full night
-                dayNightBlend = 1;
-            } else {
-                // Sunrise transition (0.9 to 1.0)
-                dayNightBlend = 1 - ((progress - 0.9) / 0.1); // 1 to 0
+        function devMaxSelectedTower() {
+            if(gameState.selectedTower) {
+                gameState.selectedTower.level = 10;
+                showTowerInfo(gameState.selectedTower);
             }
-
-            // Smooth the transition with easing
-            const eased = dayNightBlend * dayNightBlend * (3 - 2 * dayNightBlend); // Smoothstep
-
-            // Apply LERP to background colors
-            const bgStart = lerpColor(dayBgStart, nightBgStart, eased);
-            const bgEnd = lerpColor(dayBgEnd, nightBgEnd, eased);
-            document.body.style.background = `linear-gradient(135deg, ${bgStart} 0%, ${bgEnd} 100%)`;
-
-            // Apply LERP to canvas background
-            const canvasBg = lerpColor(dayCanvasBg, nightCanvasBg, eased);
-            canvas.style.background = canvasBg;
-
-            // Night overlay (lighter than before)
-            const overlayOpacity = eased * 0.35; // Max 35% opacity instead of 85%
-            overlay.style.background = `radial-gradient(circle at 50% 20%, rgba(20,30,50,${overlayOpacity * 0.8}), rgba(10,20,40,${overlayOpacity}))`;
-            overlay.style.opacity = overlayOpacity > 0 ? 1 : 0;
-
-            // Sun/Moon positioning with smooth transitions
-            const sunOpacity = 1 - eased;
-            const moonOpacity = eased;
-
-            sun.style.opacity = sunOpacity;
-            sun.style.top = lerp(40, -100, eased) + 'px';
-
-            moon.style.opacity = moonOpacity;
-            moon.style.top = lerp(-100, 80, eased) + 'px';
-
-            // Stars visibility
-            stars.style.opacity = eased * 0.8; // Max 80% opacity for subtlety
-
-            // Update phase for reference
-            cycle.phase = eased < 0.3 ? 'day' : eased > 0.7 ? 'night' : 'transition';
         }
 
         // === GAME LOOP ===
+        let gameLoopAccumulator = 0;
+
         function gameLoop() {
+            // Always update camera and UI
             updateCamera();
             updateRangeCircle();
+
+            // Skip game updates if paused
+            if (!gameState.paused) {
+                // Handle game speed
+                const speed = gameState.gameSpeed || 1;
+
+                if(speed >= 1) {
+                    // For speeds >= 1, run updates multiple times per frame
+                    for(let i = 0; i < speed; i++) {
+                        runGameUpdate();
+                    }
+                } else {
+                    // For speeds < 1, accumulate and run when threshold reached
+                    gameLoopAccumulator += speed;
+                    if(gameLoopAccumulator >= 1) {
+                        runGameUpdate();
+                        gameLoopAccumulator -= 1;
+                    }
+                }
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        function runGameUpdate() {
             updateWebs();
             updateMaisie();
             updateEnemies();
             updateTowers();
             updateProjectiles();
             updateLasers();
-            updateDayNightCycle();
-            requestAnimationFrame(gameLoop);
         }
 
         function updateRangeCircle() {
@@ -2266,7 +4583,11 @@
         // === INIT ===
         updatePathMap();
         updateStats();
-        generateStars();
+        setupMobileScaling();
+        setupMobileControls();
+        setupTouchPlacement();
+        // Initialize RTS panel with build mode
+        updateRtsPanel('build');
         // Set Maisie's initial position visually
         maisie.style.left = gameState.maisie.x + 'px';
         maisie.style.top = gameState.maisie.y + 'px';
