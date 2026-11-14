@@ -1,5 +1,5 @@
 // Knotwork Deep service worker: keeps the whole game cached so it opens in airplane mode.
-const CACHE = 'knotwork-8.151-46942';
+const CACHE = 'knotwork-8.152-91488';
 const FILES = ["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-maskable-512.png","apple-touch-icon.png","favicon-32.png"];
 // (8.124) the battle songs: kept in a cache of their own from version to version, each the first time the game fetches it;
 // an old render of a song (another hash) is dropped
