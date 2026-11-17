@@ -1,5 +1,5 @@
 // Knotwork Deep service worker: keeps the whole game cached so it opens in airplane mode.
-const CACHE = 'knotwork-8.171.1-78306';
+const CACHE = 'knotwork-8.171.2-78335';
 const FILES = ["./","index.html","manifest.webmanifest","icon-192.png","icon-512.png","icon-maskable-512.png","apple-touch-icon.png","favicon-32.png"];
 // (2026-11-15, the journeys) the lands' pictures: kept in a cache of their own from version to version, each the first time the
 // game fetches it (a run fetches the lands ahead of it as it goes); a land's old picture (another hash) is dropped
